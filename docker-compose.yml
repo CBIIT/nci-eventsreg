@@ -1,19 +1,18 @@
-version: '2'
+version: '3.9'
 services:
   drupal-server:
-    container_name: events
+    container_name: drupal-server
     image: ncidockerhub.nci.nih.gov/webteam/drupal:1.1.22
-    network_mode: bridge
     ports:
-     - "8080:80"
+     - 8080:80
     environment:
       hash_salt: paxwBNh8p2uVhxb0zRaLrB_vTsme3iG3rEeE1ABh9SxFhnkSmG56ezeqBeK995f
       repository: https://github.com/cbiit/nci-eventsreg
       database: events
-      username: root
-      password: my-secret-pw
-      host: 192.168.0.170
-      port: 3308
+      username: mysql
+      password: 1234
+      host: mysql
+      port: 3306
       namespace:
       driver: mysql
       ldap_port: 636
@@ -21,4 +20,24 @@ services:
       load_database: "true"
       local_build: "true"
       CONTAINER_BRANCH_OR_TAG: 2.0.0-dev
-
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+  mysql:
+    container_name: drupal-db
+    image: mysql:5.7.39
+    ports:
+     - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: events
+    command: [--max-allowed-packet=67108864]
+    healthcheck:
+      test: "mysqladmin -umysql -p1234 ping"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: always
