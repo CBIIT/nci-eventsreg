@@ -1,0 +1,83 @@
+<div class="container">
+	<h2 class="nci-red">Events Registration Websites</h2>
+	<div>
+<div style="overflow-x:auto;">		
+<table class="table">
+	<thead>
+		<tr>
+			<td><span title="Acronym is describe by &lt;org code&gt;-&lt;website code&gt;.  It should be a unique code less than 27 characters.">Acronym</span></td>
+			<td>Event Name</td>
+			<td>Website Link</td>
+			<td><span title="Active websites will be published and advertised on the front page of the events.cancer.gov website.">Active</span></td>
+			<td><span title="The first day of the event or the deadline when the application is due.">Event Start Date or Application Due Date</span></td>
+			<td>Results</td>
+			<td>Submissions</td>
+			<td>Limit Total</td>
+			<td>Webform Status</td>
+			<td>Scheduled Open</td>
+			<td>Scheduled Close</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for org in orgs %}
+			{% if org.events|length > 0 %}
+				<tr class="organization"><td colspan="11">{{ org.name }}</a> (<a href="{{ org.site_uri}}" target="_blank">{{ org.org_code }}</a>)</td></tr>
+				{% for event in org.events %}
+
+					{% set rowspan = 1 %}
+					{% if event.results|length > 0 %}
+						{% set rowspan = event.results|length %}
+					{%  endif %}
+					{% set classes = '' %}
+					{% if event.active == 1 %}
+						{% set classes = 'website-active' %}
+					{% else %}
+						{% set classes = 'website-inactive' %}
+					{% endif %}
+
+					<tr class="{{ classes }}">
+						<td rowspan="{{ rowspan }}">{{ event.acronym }}</td>
+						{% if edit_event_permission == true %}
+							<td width="300" rowspan="{{ rowspan }}" title="{{ event.description }}"><a href="/node/{{ event.entity_id }}/edit?destination=/events">{{ event.title }}</a></td>
+						{% else %}
+							<td width="300" rowspan="{{ rowspan }}" title="{{ event.description }}">{{ event.title }}</td>
+						{% endif %}
+						<td rowspan="{{ rowspan }}"><a href="{{ event.event_home_link_uri }}">{{ event.event_home_link_uri }}</a></td>
+						<td rowspan="{{ rowspan }}" title="{{ event.active ? 'Site is currently published and advertised on front page.':'Site is not on front page and is not advertised on front page.' }}">{{ event.active ? 'Yes':'No' }}</td>
+						<td rowspan="{{ rowspan }} nowrap" >{{ event.event_date|date("M j, y") }}</td>
+						<td>
+							{% if event.results[0].title is defined %}
+								<a href="{{ event.results[0].uri }}">{{ event.results[0].title }}</a> 
+							{% endif %}
+						</td>
+						<td style="text-align:center;"><span title="Number of Submissions">{{ event.results[0].webform.submissions }}</span></td>
+						<td style="text-align:center;"><span title="Max number of submissions">{{ event.results[0].webform.limit_total }}</span></td>						
+						<td >
+							{{ event.results[0].webform.status }}
+						</td>
+						<td>{{ event.results[0].webform.scheduled_open }}</td>
+						<td>{{ event.results[0].webform.scheduled_close }}</td>
+					</tr>
+					{% for result in event.results %}
+						{% if loop.index0 > 0 %}
+							<tr class="{{ classes }} extra-registration">
+								<td><a href="{{ result.uri }}">{{ result.title }}</a></td>
+								<td style="text-align:center;"><span title="Number of Submissions">{{ result.webform.submissions }}</span></td>
+								<td style="text-align:center;"><span title="Max number of submissions">{{ result.webform.limit_total }}</span></td>
+								<td>{{ result.webform.status }}</td>
+								<td>{{ result.webform.scheduled_open }}</td>
+								<td>{{ result.webform.scheduled_close }}</td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+	</div>
+</div>
+{#
+{{ dump(orgs|json_encode()) }}
+#}

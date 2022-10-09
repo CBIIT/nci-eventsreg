@@ -1,0 +1,6 @@
+#!/bin/bash
+mysql -uroot -pmy-secret-pw -P3308 -h127.0.0.1 --execute='drop database events';
+mysql -uroot -pmy-secret-pw -P3308 -h127.0.0.1 --execute='create database events';
+mysql -uroot -pmy-secret-pw -P3308 -h127.0.0.1 events < database.sql;
+docker-compose down
+docker-compose up

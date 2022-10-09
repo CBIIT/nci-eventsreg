@@ -1,0 +1,14 @@
+--- composer.json	2022-05-18 11:22:19.000000000 -0400
++++ composer.json2	2022-09-29 12:06:47.000000000 -0400
+@@ -96,6 +96,11 @@
+         ]
+     },
+     "extra": {
++        "patches": {
++            "drupal/redirect_after_login": {
++            "Patch to fix login issue with redirect_after_login module": "https://www.drupal.org/files/issues/2022-07-26/redirect_after_login-3214949-107.patch"
++            }
++        },
+         "installer-paths": {
+             "web/core": ["type:drupal-core"],
+             "web/libraries/{$name}": ["type:drupal-library"],

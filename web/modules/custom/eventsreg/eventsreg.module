@@ -1,0 +1,344 @@
+<?php 
+
+use Drupal\node\NodeInterface;
+use Drupal\eventsreg\Utility\EventsRegPageMaker;
+use Drupal\user\Entity\User;
+use Drupal\Core\Datetime\DrupalDateTime;
+function eventsreg_preprocess_html(&$variables) {
+
+  //$something = "We got this";
+  //$variables['head_title']['title'] = $something;
+  //dump($variables);
+}
+
+function eventsreg_preprocess_block(&$variables) {
+  //dump($variables);
+
+  //if ('page_title_block' == $variables['plugin_id']) {
+  //	$something = "Set by Preprocess_block";
+  //  $variables['content']['#title'] = $something;
+  //}
+}
+
+function decodeAlias($alias){
+	//$pieces = explode("/", substr($alias, 1));
+	return str_replace("/", "-", substr($alias, 1));
+}
+
+function isMenu($menu) {
+	//dpm($menu);
+	return true;
+}
+
+/*
+function getAcronymFromWebformNode($nid) {
+	$acronym = "";
+
+	$query = "SELECT webform_target_id FROM node__webform where entity_id = $nid";
+	$result = \Drupal::database()->query($query);
+	$row = $result->fetchObject();
+	$webform_id = $row->webform_target_id;
+	$pieces = explode("_", $webform_id);
+	$acronym = $pieces[0].'-'.$pieces[1];
+
+	return $acronym;
+}
+*/
+
+function eventsreg_preprocess_page(&$variables) {
+
+	EventsRegPageMaker::setupPage($variables);
+	//$variables['page']['#title'] = $variables['eventsreg']['title'];
+	//dump($variables);
+
+//$attachment = EventsRegPageMaker::setupPage($nid, \Drupal::routeMatch()->getRouteName());
+
+}
+
+function removeInternalFromUri($str) {
+
+	return $str;
+}
+
+function getCurrentEventsLinks($nid) {
+	$links = [];
+	//
+	//For now only 'administrator' get the link.
+	//	
+	//$uid = \Drupal::currentUser()->id();
+    //$user = \Drupal::service('entity_type.manager')->getStorage('user')->load($uid);
+    $roles = \Drupal::currentUser()->getRoles();
+    if(in_array('administrator', $roles)) {
+	  	//dump($roles);
+		//Return Webform links for a $nid.
+		$query = "SELECT nfr.field_results_title, nfr.field_results_uri ";
+		$query .= "FROM node__field_results nfr where nfr.entity_id = $nid;";
+
+		$result = \Drupal::database()->query($query);
+
+		for ($count = 0; $row = $result->fetchObject(); $count++) {
+			$link = array('title' => $row->field_results_title,
+						'url' => removeInternalFromUri($row->field_results_uri));
+			array_push($links, $link);
+		}
+	}
+
+	return $links;
+}
+
+function getCurrentEventsSites() {
+	
+	$query = "SELECT nfd.nid, nfd.title, nb.body_summary, nb.body_value, nfehl.field_event_home_link_uri, nfedt.field_event_date_time_value, nfea.field_event_active_value ";
+	$query .= "FROM node_field_data nfd, node__body nb, node__field_event_home_link nfehl, node__field_event_date_time nfedt, node__field_event_active nfea ";
+	$query .= "where nfd.nid = nb.entity_id and nfd.nid = nfehl.entity_id and nfd.nid = nfedt.entity_id and nfd.nid = nfea.entity_id and nfea.field_event_active_value = 1 and nfd.type = 'event' ";
+	$query .= "order by nfedt.field_event_date_time_value desc; ";
+
+	//drupal_set_message($query);
+
+	$result = \Drupal::database()->query($query);
+
+	$sites = [];
+	for ($count = 0; $row = $result->fetchObject(); $count++) {
+		$links = getCurrentEventsLinks($row->nid);
+		$site = array('nid' => $row->nid,
+					'acronym' => $row->title,
+					'title' => $row->body_summary, 
+					'description' => $row->body_value,
+					'url' => removeInternalFromUri($row->field_event_home_link_uri),
+					'event_date' => $row->field_event_date_time_value,
+					'links' => $links);
+		array_push($sites, $site);
+	}
+	//dpm(printr($sites, TRUE));
+
+
+	//return $sites;
+	return $sites;
+}
+
+function getCurrentEventsHTML() {
+  //  Load and render a twig template
+  $twig = \Drupal::service('twig');
+  $sites = getCurrentEventsSites();
+  //dump($test);
+
+  //$config = \Drupal::config('webform.webform.icrp_website_survey');
+  
+  //drupal_set_message($config->get('open'));  //DateTime String if scheduled
+  //drupal_set_message($config->get('close'));  //DateTime String if scheduled
+  //drupal_set_message($config->get('status'));  //'open', 'closed', 'scheduled'
+
+/*
+  $reasons_data = getSurveyData('reasons');
+  $background_data = getSurveyData('background');
+  $familiarity_data = getSurveyData('familiarity');
+  $region_data = getSurveyData('region');
+  $helpful_data = getSurveyData('helpful');
+  $feedback_data = getSurveyData('feedback');
+*/
+  /*
+  $sites = [];
+  $links = [];
+
+  $link = array("title" => "Registrations", "url" => "/hello");
+  array_push($links, $link);
+  $link = array("title" => "Application", "url" => "/what/is/next");
+  array_push($links, $link);
+
+  $site = ["title" => "Title1", "description" => "This is a description area", 'links' => $links];
+  array_push($sites, $site);
+
+  $links = [];
+  $site = ["title" => "Title2", "description" => "This is a second description area", 'links' => $links];
+  array_push($sites, $site);
+
+  //dump($sites);
+  */
+  $template = $twig->loadTemplate('modules/custom/eventsreg/templates/current.events.html.twig');
+  $response = $template->render(['sites' => $sites]);
+
+  return $response;
+}
+/***
+/* UserEvents
+/*
+****/
+function getWebformId($uri) {
+	//drupal_set_message($uri);
+	//drupal_set_message(substr_compare($uri, 'internal:/admin/structure/webform/manage/', 0, 41));
+	if (substr_compare($uri, 'internal:/admin/structure/webform/manage/', 0, 41) == 0) {
+		// Direct Webform one-to-one relation to Webform and results
+		//drupal_set_message("We got a match for ".$uri);
+		$uri_pieces = explode("/", $uri);
+		$webform_id = $uri_pieces[5];
+		//drupal_set_message("webform_id = ".$webform_id);
+
+
+	} else {
+		// Webform Node many-to-one relation to Webform and results
+
+		$uri_pieces = explode("/", $uri);
+		$entity_id = $uri_pieces[2];
+		$query = "SELECT webform_target_id as webform_id FROM node__webform where entity_id = $entity_id; ";
+		//drupal_set_message($query);
+		$result = \Drupal::database()->query($query);
+		$row = $result->fetchObject();
+		$webform_id = $row->webform_id;
+		Drupal\Core\Messenger\MessengerInterface::addMessage("The ".$webform_id." results link is set to a node results.  Please change the results link to the webform results and not the node results.  The current link is ".$uri." which is a webform link.", 'warning');
+		//$webform_id = 'cct_rb';
+	}
+	return $webform_id;
+}
+
+function getWebformStatus($webform_id) {
+
+$query = "SELECT count(*) as submissions FROM eventsreg.webform_submission where webform_id = '{$webform_id}'";
+	//drupal_set_message($query);
+	$result = \Drupal::database()->query($query);
+	$row = $result->fetchObject();
+	$submissions = $row->submissions;
+
+    $isSurveyOpen = false;
+    $config = \Drupal::config('webform.webform.'.$webform_id);
+
+    if(!isset($config)) {
+      return "Website Survey does not exist.  ";
+    }
+    $status = $config->get('status');
+    $limit_total = $config->get('settings.limit_total');
+
+    $now = new DrupalDateTime('now');
+    $open = (int) $config->get('open') == "null";
+    $open = !$open ? new DrupalDateTime($config->get('open')) : NULL;
+    $close = (int) $config->get('close') == "null";
+    $close = !$close ? new DrupalDateTime($config->get('close')) : NULL;
+    //drupal_set_message(print_r($open, TRUE));
+    if(!is_null($open)  && is_null($close)) {
+      if($open->getTimestamp() < $now->getTimestamp()) {
+        $isSurveyOpen = true;
+      }
+    }
+    if(!is_null($open)  && !is_null($close)) {
+      if($open->getTimestamp() < $now->getTimestamp() && $close->getTimestamp() > $now->getTimestamp()) {
+        $isSurveyOpen = true;
+      }
+    }
+    $open = !is_null($open) ? date('M j, y h:i A',$open->getTimestamp()) : '';
+    $close = !is_null($close) ? date('M j, y h:i A',$close->getTimestamp()) : '';
+    $webform = array('submissions' => $submissions,
+    				'limit_total' => $limit_total,
+					'status' => $status,
+					'scheduled_open' => $open,
+					'scheduled_close' => $close);
+    return $webform;
+
+}
+
+function getEventsResults($entity_id) {
+	$query = "SELECT field_results_uri as uri, field_results_title as title FROM eventsreg.node__field_results ";
+	$query .= "WHERE entity_id = $entity_id; ";
+	//drupal_set_message($query);
+	$result = \Drupal::database()->query($query);
+
+	$results = [];
+	for ($count = 0; $row = $result->fetchObject(); $count++) {
+		$singel_result = array('uri' => $row->uri,
+					'title' => $row->title,
+					'webform' => getWebformStatus(getWebformId($row->uri)));
+		array_push($results, $singel_result);	
+	}
+
+	return $results;
+}
+
+function getEventsData($entity_id) {
+
+ 	$query = "SELECT gcfd.entity_id, gcfd.label as acronym, nfea.field_event_active_value as active, nfedt.field_event_date_time_value as event_date, nfehl.field_event_home_link_uri as event_home_link_uri, nb.body_value as description, nb.body_summary as title ";
+	$query .= "FROM group_content_field_data gcfd, node__field_event_active nfea, ";
+	$query .= "node__field_event_date_time nfedt, node__field_event_home_link nfehl, node__body nb ";
+	$query .= "WHERE gcfd.gid=$entity_id and gcfd.type = 'organization-group_node-event' ";
+	$query .= "and gcfd.entity_id = nfea.entity_id ";
+	$query .= "and gcfd.entity_id = nfedt.entity_id ";
+	$query .= "and gcfd.entity_id = nfehl.entity_id ";
+	$query .= "and gcfd.entity_id = nb.entity_id ";
+
+	$result = \Drupal::database()->query($query);
+
+	$events = [];
+	for ($count = 0; $row = $result->fetchObject(); $count++) {
+		$results = getEventsResults($row->entity_id);
+		$event = array('entity_id' => $row->entity_id,
+					'acronym' => $row->acronym,
+					'active' => $row->active,
+					'event_date' => $row->event_date,
+					'event_home_link_uri' => substr($row->event_home_link_uri, 9),
+					'description' => $row->description,
+					'title' => $row->title,
+					'results' => $results);
+		array_push($events, $event);	}
+
+	return $events;
+}
+
+function getUserEventsSites() {
+
+
+	$uid = \Drupal::currentUser()->id();
+  //$user = \Drupal::service('entity_type.manager')->getStorage('user')->load($uid);
+  //drupal_set_message("User ID: ".$uid);
+  
+//$query  = "SELECT distinct(gid) as gid FROM group_content_field_data where entity_id = $uid ";
+//$query .= "and type='organization-group_membership';";
+
+$query = "SELECT q1.gid, gfoc.field_org_code_value as org_code, gfd.label as name, gfows.field_organization_web_site_uri as site_uri, gfows.field_organization_web_site_title as site_title from ( ";
+$query .= "SELECT distinct(gid) as gid FROM group_content_field_data gcfd where gcfd.entity_id = $uid and gcfd.type='organization-group_membership' ";
+$query .= ") as q1, groups_field_data gfd, group__field_organization_web_site gfows, group__field_org_code gfoc ";
+$query .= "Where q1.gid = gfd.id ";
+$query .= "and q1.gid = gfows.entity_id ";
+$query .= "and q1.gid = gfoc.entity_id ";
+
+//drupal_set_message($query);
+	
+	$result = \Drupal::database()->query($query);
+
+	$orgs = [];
+	for ($count = 0; $row = $result->fetchObject(); $count++) {
+		$events = getEventsData($row->gid);
+		$org = array('gid' => $row->gid,
+					'org_code' => $row->org_code,
+					'name' => $row->name,
+					'site_uri' => $row->site_uri,
+					'site_title' => $row->site_title,
+					'events' => $events);
+		array_push($orgs, $org);
+	}
+
+	return $orgs;
+}
+
+function eventesreg_preprocess_page(&$variables) {
+	Drupal\Core\Messenger\MessengerInterface::addMessage("You got a preprocess page");
+}
+
+function getUserEventsHTML() {
+	
+	$edit_event_permission = false;
+
+	$uid = \Drupal::currentUser()->id();
+	$user = \Drupal::service('entity_type.manager')->getStorage('user')->load($uid);
+	if($user->hasRole('administrator') || $user->hasRole('developer')) {
+		$edit_event_permission = true;
+	} 
+  //  Load and render a twig template
+  $twig = \Drupal::service('twig');
+  $orgs = getUserEventsSites();
+  //dump($test);
+
+  $template = $twig->loadTemplate('modules/custom/eventsreg/templates/events.html.twig');
+  $response = $template->render(['orgs' => $orgs, 'edit_event_permission' => $edit_event_permission]);
+
+  return $response;
+}	
+/* End User Evnets */
+
+
