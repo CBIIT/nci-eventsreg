@@ -19,7 +19,7 @@ services:
       ldap_address: ldaps://localhost
       load_database: "true"
       local_build: "true"
-      CONTAINER_BRANCH_OR_TAG: drupal9
+      CONTAINER_BRANCH_OR_TAG: alpine
     depends_on:
       mysql:
         condition: service_healthy
