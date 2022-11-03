@@ -8,7 +8,7 @@ services:
     environment:
       hash_salt: paxwBNh8p2uVhxb0zRaLrB_vTsme3iG3rEeE1ABh9SxFhnkSmG56ezeqBeK995f
       repository: https://github.com/cbiit/nci-eventsreg
-      database: events
+      database: drupal
       username: mysql
       password: 1234
       host: mysql
@@ -33,7 +33,7 @@ services:
       MYSQL_ROOT_PASSWORD: my-secret-pw
       MYSQL_USER: mysql
       MYSQL_PASSWORD: 1234
-      MYSQL_DATABASE: events
+      MYSQL_DATABASE: drupal
     command: [--max-allowed-packet=67108864]
     healthcheck:
       test: "mysqladmin -umysql -p1234 ping"
