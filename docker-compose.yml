@@ -2,7 +2,7 @@ version: '3.9'
 services:
   drupal-server:
     container_name: drupal-server
-    image: ncidockerhub.nci.nih.gov/webteam/drupal:alpine-1.0
+    image: ncidockerhub.nci.nih.gov/webteam/drupal:alpine-1.5
     ports:
      - 8080:80
     environment:
