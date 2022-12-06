@@ -61,8 +61,8 @@
 #}
 {% set tabindex = 0 %}
 <!-- HEADER -->
-<header>
-  <div class="container">
+<header> 
+ <div class="container">
     <div class="row">
       <div class="col-lg-7 col-md-7 col-sm-8 col-xs-9">
         {% set home_link = "/" %}
@@ -200,7 +200,7 @@
       {# Sidebar Second #}
       {% if page.sidebar_second %}
         {% block sidebar_second %}
-          <aside class="col-sm-3" role="complementary">
+          <aside class="col-sm-3" style="float: right;" role="complementary">
             {{ page.sidebar_second }}
           </aside>
         {% endblock %}
@@ -208,74 +208,15 @@
     </div>
   </div>
 {% endblock %}
-
-
-
     </div>
 
   </div>
 </div>
+{% if page.footer %}
+  {% block footer %}
+    <footer class="footer {{ container }}" role="contentinfo">
+      {{ page.footer }}
+    </footer>
+  {% endblock %}
+{% endif %}
 <!-- End Nav Bar -->
-
-<!-- New Footer -->
-
-<footer id="new-footer" class="footer site-footer" role="contentinfo">
-  <div class="region region-footer container">
-    <nav role="navigation">
-      <ul class="menu">
-        <li>
-          <a href="{{ home_link }}">Home</a>
-        </li>
-        <li>
-          <span>|</span>
-          <a href="/contact-us">Contact Us</a>
-        </li>
-        {% if logged_in %}
-          <li>
-            <span>|</span>
-            <a href="/user/logout">Log Out</a>
-          </li>
-        {% endif %}
-        <li>
-          <span>|</span>
-          <a href="http://www.cancer.gov/global/web/policies/accessibility" target="_blank">Accessibility</a>
-        </li>
-        <li>
-          <span>|</span>
-          <a href="http://www.cancer.gov/global/web/policies" target="_blank">Policies</a>
-        </li>
-        <li>
-          <span>|</span>
-          <a href="http://www.hhs.gov/vulnerability-disclosure-policy" target="_blank">HHS Vulnerability Disclosure </a>
-        </li>
-        <li>
-          <span>|</span><a href="http://www.cancer.gov/policies/foia" target="_blank">FOIA</a>
-        </li>
-      </ul>
-    </nav>
-    <nav role="navigation">
-      <ul class="menu">
-        <li>
-          <a href="http://www.dhhs.gov/" target="_blank">U.S. Department of Health and Human Services</a>
-        </li>
-        <li>
-          <span>|</span>
-          <a href="http://www.nih.gov/" target="_blank">National Institutes of Health</a>
-        </li>
-        <li>
-          <span>|</span>
-          <a href="http://www.cancer.gov/" target="_blank">National Cancer Institute </a>
-        </li>
-        <li>
-          <span>|</span>
-          <a href="http://www.usa.gov/" target="_blank">USA.gov</a>
-        </li>
-      </ul>
-    </nav>
-      <div>
-        <p class="tagline">NIH ... Turning Discovery Into Health <a href="/user" style="text-decoration: none;color:white;cursor: pointer;"><sup>®</sup></a></p>
-      </div>
-  </div>
-
-</footer>
-<!-- End Footer -->
