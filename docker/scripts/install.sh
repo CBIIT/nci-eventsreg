@@ -16,3 +16,4 @@ fi
 
 rm -rf /opt/drupal/web/sites/default/files
 ln -s /mnt/s3fs/public /opt/drupal/web/sites/default/files
+chown -R drupaldocker:drupaldocker /opt/drupal/web/sites/default/files
