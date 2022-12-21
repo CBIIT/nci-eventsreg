@@ -45,4 +45,5 @@ drush cset ldap_authentication.settings sids.eventsldap eventsldap -y
 drush cset ldap_authentication.settings skipAdministrators 0 -y
 drush updb -y
 drush cr
+cp WebformScheduledEmailManager.php ./web/modules/contrib/webform/modules/webform_scheduled_email/src
 echo "Done"
