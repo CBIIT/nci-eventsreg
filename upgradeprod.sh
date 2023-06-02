@@ -1,6 +1,4 @@
 export COMPOSER_MEMORY_LIMIT=-1;
-echo "Loading the old drupal 8 db, remove this on stage/prod as we don't want to re-load db"
-mysql -hnciws-d1066-c.nci.nih.gov -uwebteamsuper -ph2F77E#@IYLTi8_?rI_1 drupal954 < events-prod-db-rds-03162023.1258.sql
 
 echo "backing up old site to nci-cct-eventsreg_backup"
 #mv nci-cct-eventsreg nci-cct-eventsreg_backup
