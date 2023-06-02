@@ -4,7 +4,7 @@ mysql -hnciws-d1066-c.nci.nih.gov -uwebteamsuper -ph2F77E#@IYLTi8_?rI_1 tempeven
 echo "backing up old site to nci-cct-eventsreg_backup"
 mv nci-cct-eventsreg nci-cct-eventsreg_backup
 # remove this line below
-chmod u+w nci-cct-eventsreg/web/sites/default
+chmod u+w nci-cct-eventsreg_backup/web/sites/default
 
 echo "Cloning drupal 8 from github"
 git clone https://github.com/cbiit/nci-eventsreg nci-cct-eventsreg
