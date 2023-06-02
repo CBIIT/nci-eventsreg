@@ -1,11 +1,10 @@
 export COMPOSER_MEMORY_LIMIT=-1;
 echo "Loading the old drupal 8 db, remove this on stage/prod as we don't want to re-load db"
-mysql -hnciws-d1066-c.nci.nih.gov -uuser -ppassword tempevents < /local/drupal/events-prod-db-rds-03162023.1258.sql 
+mysql -hnciws-d1066-c.nci.nih.gov -uwebteamsuper -ph2F77E#@IYLTi8_?rI_1 tempevents < /local/drupal/events-prod-db-rds-03162023.1258.sql 
 echo "backing up old site to nci-cct-eventsreg_backup"
-#mv nci-cct-eventsreg nci-cct-eventsreg_backup
+mv nci-cct-eventsreg nci-cct-eventsreg_backup
 # remove this line below
 chmod u+w nci-cct-eventsreg/web/sites/default
-rm -rf nci-cct-eventsreg
 
 echo "Cloning drupal 8 from github"
 git clone https://github.com/cbiit/nci-eventsreg nci-cct-eventsreg
