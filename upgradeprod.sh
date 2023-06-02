@@ -14,6 +14,7 @@ git checkout upgrade
 echo "Copying existing files from old site to new site"
 cp -R ../nci-cct-eventsreg/web/sites/default/files ./web/sites/default/files
 cp ../nci-cct-eventsreg/web/sites/default/settings.php ./web/sites/default
+cp WebformScheduledEmailManager.php web/modules/contrib/webform/modules/webform_scheduled_email/src
 echo "Running composer install"
 composer install
 echo "Upgrading"
