@@ -26,6 +26,10 @@ composer remove --dev webflo/drupal-core-require-dev --no-update
 composer remove drupal/webform_views:^5.0 drupal/entity_print:^2.7 drupal/core drupal/ldap drupal/devel drupal/console drupal/core webflo/drupal-finder drupal-composer/drupal-scaffold --no-update
 composer require drupal/webform_views:^5.0 dompdf/dompdf:^2.0.0 drupal/entity_print:^2.7 drupal/default_content_deploy:^2.0 drupal/default_content:^2.0@alpha drupal/ldap cweagans/composer-patches drupal/core-recommended:^9 drupal/module_missing_message_fixer drush/drush:^10.0.0 drupal/backup_migrate:^5 drupal/core-composer-scaffold:^9 drupal/core-project-message:^9 --update-with-dependencies --no-update
 composer update
+drush sql-query "drop table group_revision__field_org_code;"
+drush sql-query "drop table group_revision__field_organization_web_site;"
+drush sql-query "drop table groups_field_revision;"
+drush sql-query "drop table groups_revision;"
 drush updb -y
 drush en backup_migrate
 
