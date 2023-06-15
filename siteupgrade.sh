@@ -36,6 +36,7 @@ patch -u composer.json -i composer_redirect.patch
 composer install
 drush updb -y
 echo "* Enable ldap_authentication"
+drush pm-enable ldap -y
 drush pm-enable ldap_authentication -y
 drush updb -y
 drush cset ldap_authentication.settings sids.eventsldap eventsldap -y
