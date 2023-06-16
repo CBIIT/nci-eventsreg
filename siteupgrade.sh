@@ -31,7 +31,10 @@ drush sql-query "drop table groups_field_revision;"
 drush sql-query "drop table groups_revision;"
 drush updb -y
 drush en backup_migrate
-
+drush pm-uninstall url_redirect -y
+composer remove drupal/url_redirect
+composer require 'drupal/url_redirect:^3.0'
+drush pm-enable url_redirect -y
 patch -u composer.json -i composer_redirect.patch
 composer install
 drush updb -y
