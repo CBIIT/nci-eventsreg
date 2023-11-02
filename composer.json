@@ -45,6 +45,7 @@
         "drupal/imce": "^2.4",
         "drupal/jquery_ui_checkboxradio": "^1.4",
         "drupal/ldap": "^4.3",
+        "drupal/message_banner": "^2.0",
         "drupal/mailsystem": "^4.1",
         "drupal/metatag": "^1.7",
         "drupal/module_missing_message_fixer": "^2.0",
