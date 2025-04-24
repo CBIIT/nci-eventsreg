@@ -192,7 +192,7 @@ function getWebformId($uri) {
 
 function getWebformStatus($webform_id) {
 
-$query = "SELECT count(*) as submissions FROM eventsreg.webform_submission where webform_id = '{$webform_id}'";
+$query = "SELECT count(*) as submissions FROM webform_submission where webform_id = '{$webform_id}'";
 	//drupal_set_message($query);
 	$result = \Drupal::database()->query($query);
 	$row = $result->fetchObject();
@@ -235,7 +235,7 @@ $query = "SELECT count(*) as submissions FROM eventsreg.webform_submission where
 }
 
 function getEventsResults($entity_id) {
-	$query = "SELECT field_results_uri as uri, field_results_title as title FROM eventsreg.node__field_results ";
+	$query = "SELECT field_results_uri as uri, field_results_title as title FROM node__field_results ";
 	$query .= "WHERE entity_id = $entity_id; ";
 	//drupal_set_message($query);
 	$result = \Drupal::database()->query($query);
@@ -333,8 +333,9 @@ function getUserEventsHTML() {
   $twig = \Drupal::service('twig');
   $orgs = getUserEventsSites();
   //dump($test);
+  $template = \Drupal::service('twig')->load('modules/custom/eventsreg/templates/events.html.twig');
 
-  $template = $twig->loadTemplate('modules/custom/eventsreg/templates/events.html.twig');
+  //$template = $twig->loadTemplate('modules/custom/eventsreg/templates/events.html.twig');
   $response = $template->render(['orgs' => $orgs, 'edit_event_permission' => $edit_event_permission]);
 
   return $response;
