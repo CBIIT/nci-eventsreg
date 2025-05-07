@@ -3,9 +3,6 @@
     "description": "Project template for Drupal 8 projects with composer",
     "type": "project",
     "license": "GPL-2.0-or-later",
-    "replace": {
-     "zendframework/zend-feed": "self.version"
-    },
     "authors": [
         {
             "name": "",
@@ -18,28 +15,27 @@
             "url": "https://packages.drupal.org/8"
         }
     ],
-"require": {
+    "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.7",
         "dompdf/dompdf": "^2.0.0",
-        "drupal/add_to_head": "^1.0@beta",
-        "drupal/admin_toolbar": "^3.5",
+        "drupal/admin_toolbar": "^3",
         "drupal/asset_injector": "^2.21",
         "drupal/autologout": "^1.0",
         "drupal/backup_migrate": "^5",
         "drupal/bartik": "^1.0",
         "drupal/bootstrap": "^3.35",
+        "drupal/cache_control_override": "^2.0",
         "drupal/calendar_links_token": "^1.0@alpha",
         "drupal/ckeditor_lts": "^1.0",
+        "drupal/color": "^1.0",
         "drupal/content_sync": "^4.0@RC",
         "drupal/core-composer-scaffold": "10.4.6",
         "drupal/core-project-message": "10.4.6",
         "drupal/core-recommended": "10.4.6",
         "drupal/csv_serialization": "^4.0",
-        "drupal/ctools": "^4.1",
         "drupal/default_content": "^2.0@alpha",
         "drupal/default_content_deploy": "^2.1",
-        "drupal/devel": "^5.3",
         "drupal/doc_serialization": "^4.0@beta",
         "drupal/entity": "^1.6",
         "drupal/entity_print": "^2.7",
@@ -50,16 +46,14 @@
         "drupal/google_analytics": "^4.0",
         "drupal/group": "^1.0@RC",
         "drupal/hal": "^2.0",
-        "drupal/honeypot": "^2.2",
+        "drupal/honeypot": "^2.1",
         "drupal/imce": "^3.1",
+        "drupal/jquery_ui": "^1.7",
         "drupal/jquery_ui_checkboxradio": "^2.0",
-        "drupal/ldap": "^4.3",
+        "drupal/ldap": "^4.12",
         "drupal/mailsystem": "^4.1",
-        "drupal/message_banner": "^2.0",
-        "drupal/metatag": "^1.2.6",
-        "drupal/migrate_plus": "^6.0",
+        "drupal/metatag": "^2.1",
         "drupal/module_missing_message_fixer": "^2.0",
-        "drupal/nodeaccess": "^2.0@alpha",
         "drupal/pathauto": "^1.8",
         "drupal/pdf": "^1.2",
         "drupal/quickedit": "^1.0",
@@ -68,20 +62,19 @@
         "drupal/redirect_after_login": "^2.3",
         "drupal/rules": "^4.0",
         "drupal/scheduler": "^1.4",
-        "drupal/security_review": "^3.1",
         "drupal/select2": "^1.1",
         "drupal/seven": "^1.0",
         "drupal/symfony_mailer": "^1.5",
-        "drupal/typed_data": "^2.0",
+        "drupal/typed_data": "^2.1",
         "drupal/url_redirect": "^3.0",
         "drupal/views_data_export": "^1.0@beta",
         "drupal/webform": "^6.2",
         "drupal/webform_mass_email": "^1.0",
-        "drupal/webform_views": "^5.0",
-        "drush/drush": "^12.4.3",
+        "drupal/webform_views": "^5.5",
+        "drush/drush": "^12.2",
         "phpoffice/phpword": "^0.18",
-        "symfony/psr-http-message-bridge": "~6.4.7",
-        "vlucas/phpdotenv": "^5.0"
+        "vlucas/phpdotenv": "^2.4",
+        "webmozart/path-util": "^2.3"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -116,16 +109,11 @@
         ],
         "post-update-cmd": [
             "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
-            "drush wfld",
-            "drush updatedb -y",
             "drush cr"
         ]
     },
     "extra": {
         "patches": {
-            "drupal/redirect_after_login": {
-            "Patch to fix login issue with redirect_after_login module": "https://www.drupal.org/files/issues/2022-07-26/redirect_after_login-3214949-107.patch"
-            }
         },
         "installer-paths": {
             "web/core": ["type:drupal-core"],
