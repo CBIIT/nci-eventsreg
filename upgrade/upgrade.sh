@@ -22,6 +22,7 @@ cp RedirectSubscriber.php ../web/modules/contrib/url_redirect/src/EventSubscribe
 cp Element.php ../web/core/lib/Drupal/Core/Render
 echo "clearing cache"
 cp eventsreg.info.yml ../web/modules/custom/eventsreg/ 
+cp eventsreg.module ../web/modules/custom/eventsreg/
 cp cct.info.yml ../web/themes/cct/
 echo "ADD THE MAILER CONFIGURATION"
 drush --root=.. updatedb -y
