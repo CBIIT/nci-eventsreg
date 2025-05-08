@@ -2,7 +2,7 @@
 echo "running entity updates"
 chown -R apache:apache ../
 drush --root=.. updatedb-status --entity-updates
-drush --root=.. php-eval "\$m=\Drupal::entityDefinitionUpdateManager();foreach(['publish_on','unpublish_on'] as \$f){\$d=\$m->getFieldStorageDefinition(\$f,'taxonomy_term');if(\$d){\$m->uninstallFieldStorageDefinition(\$d);print\"Removed \$f\n\";}else{print\"\$f not found\n\";}}"
+drush --root=.. php-eval "\$m=\Drupal::entityDefinitionUpdateManager();foreach(['publish_on','unpublish_on', 'filter_image_lazy_load'] as \$f){\$d=\$m->getFieldStorageDefinition(\$f,'taxonomy_term');if(\$d){\$m->uninstallFieldStorageDefinition(\$d);print\"Removed \$f\n\";}else{print\"\$f not found\n\";}}"
 composer --working-dir=.. require drupal/honeypot:^2.1
 composer --working-dir=.. require drupal/core-recommended:9.5.11 drupal/core-composer-scaffold:9.5.11 drupal/core-project-message:9.5.11 --update-with-all-dependencies
 echo "copy composer"
