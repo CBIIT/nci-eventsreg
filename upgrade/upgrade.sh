@@ -1,6 +1,5 @@
 #!/bin/sh
 echo "running entity updates"
-chown -R apache:apache ../
 drush --root=.. updatedb-status --entity-updates
 drush --root=.. php-eval "\$m=\Drupal::entityDefinitionUpdateManager();foreach(['publish_on','unpublish_on', 'filter_image_lazy_load'] as \$f){\$d=\$m->getFieldStorageDefinition(\$f,'taxonomy_term');if(\$d){\$m->uninstallFieldStorageDefinition(\$d);print\"Removed \$f\n\";}else{print\"\$f not found\n\";}}"
 echo "copy composer"
