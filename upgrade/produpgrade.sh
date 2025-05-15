@@ -1,4 +1,3 @@
-#!/bin/sh
 echo "running entity updates"
 drush/vendor/drush/drush/drush --root=.. updatedb-status --entity-updates
 drush/vendor/drush/drush/drush --root=.. php-eval "\$m=\Drupal::entityDefinitionUpdateManager();foreach(['publish_on','unpublish_on', 'filter_image_lazy_load'] as \$f){\$d=\$m->getFieldStorageDefinition(\$f,'taxonomy_term');if(\$d){\$m->uninstallFieldStorageDefinition(\$d);print\"Removed \$f\n\";}else{print\"\$f not found\n\";}}"
@@ -13,15 +12,16 @@ git config --global --add safe.directory /var/www/drupal/web/modules/contrib
 echo "removing swiftmailer, webform_mass_email, security_review, rules integration, rules"
 drush/vendor/drush/drush/drush --root=.. pmu swiftmailer webform_mass_email security_review scheduler_rules_integration rules nodeaccess -y
 echo "running composer"
-composer --working-dir=.. install
+cd /local/drupal/events
+composer install
 drush --root=.. en symfony_mailer ckeditor5 -y
 echo "copying fixes for redirect subscriber and element"
-cp RedirectSubscriber.php ../web/modules/contrib/url_redirect/src/EventSubscriber
-cp Element.php ../web/core/lib/Drupal/Core/Render
+cp /local/drupal/events/upgrade/RedirectSubscriber.php ../web/modules/contrib/url_redirect/src/EventSubscriber
+cp /local/drupal/events/upgrade/Element.php ../web/core/lib/Drupal/Core/Render
 echo "clearing cache"
-cp eventsreg.info.yml ../web/modules/custom/eventsreg/ 
-cp eventsreg.module ../web/modules/custom/eventsreg/
-cp cct.info.yml ../web/themes/cct/
+cp /local/drupal/events/upgrade/eventsreg.info.yml ../web/modules/custom/eventsreg/
+cp /local/drupal/events/eventsreg.module ../web/modules/custom/eventsreg/
+cp /local/drupal/events/cct.info.yml ../web/themes/cct/
 echo "ADD THE MAILER CONFIGURATION"
-drush --root=.. updatedb -y
+drush  updatedb -y
 drush cr
