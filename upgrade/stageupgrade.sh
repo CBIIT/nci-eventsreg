@@ -12,7 +12,7 @@ git config --global --add safe.directory /var/www/drupal/web/modules/contrib/aut
 git config --global --add safe.directory /var/www/drupal/web/modules/contrib/security_review
 git config --global --add safe.directory /var/www/drupal/web/modules/contrib
 echo "removing swiftmailer, webform_mass_email, security_review, rules integration, rules"
-drush --root=.. pmu swiftmailer webform_mass_email security_review scheduler_rules_integration rules nodeaccess -y
+drush/vendor/drush/drush/drush --root=.. pmu swiftmailer webform_mass_email security_review scheduler_rules_integration rules nodeaccess -y
 echo "running composer"
 composer --working-dir=.. install
 drush --root=.. en symfony_mailer ckeditor5 -y
