@@ -1,8 +1,8 @@
 #!/bin/sh
 echo "running entity updates"
-drush --root=.. sql-sanitize
-drush --root=.. updatedb-status --entity-updates
-drush --root=.. php-eval "\$m=\Drupal::entityDefinitionUpdateManager();foreach(['publish_on','unpublish_on', 'filter_image_lazy_load'] as \$f){\$d=\$m->getFieldStorageDefinition(\$f,'taxonomy_term');if(\$d){\$m->uninstallFieldStorageDefinition(\$d);print\"Removed \$f\n\";}else{print\"\$f not found\n\";}}"
+drush/vendor/drush/drush/drush --root=.. sql-sanitize
+drush/vendor/drush/drush/drush --root=.. updatedb-status --entity-updates
+drush/vendor/drush/drush/drush --root=.. php-eval "\$m=\Drupal::entityDefinitionUpdateManager();foreach(['publish_on','unpublish_on', 'filter_image_lazy_load'] as \$f){\$d=\$m->getFieldStorageDefinition(\$f,'taxonomy_term');if(\$d){\$m->uninstallFieldStorageDefinition(\$d);print\"Removed \$f\n\";}else{print\"\$f not found\n\";}}"
 echo "copy composer"
 cp composer.json ../
 echo "removing composer lock"
