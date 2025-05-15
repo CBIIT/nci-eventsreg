@@ -14,14 +14,14 @@ drush/vendor/drush/drush/drush --root=.. pmu swiftmailer webform_mass_email secu
 echo "running composer"
 cd /local/drupal/events
 composer install
-drush --root=.. en symfony_mailer ckeditor5 -y
+drush  en symfony_mailer ckeditor5 -y
 echo "copying fixes for redirect subscriber and element"
-cp /local/drupal/events/upgrade/RedirectSubscriber.php ../web/modules/contrib/url_redirect/src/EventSubscriber
-cp /local/drupal/events/upgrade/Element.php ../web/core/lib/Drupal/Core/Render
+cp /local/drupal/events/upgrade/RedirectSubscriber.php /local/drupal/events/web/modules/contrib/url_redirect/src/EventSubscriber
+cp /local/drupal/events/upgrade/Element.php /local/drupal/events/web/core/lib/Drupal/Core/Render
 echo "clearing cache"
-cp /local/drupal/events/upgrade/eventsreg.info.yml ../web/modules/custom/eventsreg/
-cp /local/drupal/events/eventsreg.module ../web/modules/custom/eventsreg/
-cp /local/drupal/events/cct.info.yml ../web/themes/cct/
+cp /local/drupal/events/upgrade/eventsreg.info.yml /local/drupal/events/web/modules/custom/eventsreg/
+cp /local/drupal/events/upgrade/eventsreg.module /local/drupal/events/web/modules/custom/eventsreg/
+cp /local/drupal/events/upgrade/cct.info.yml /local/drupal/events/web/themes/cct/
 echo "ADD THE MAILER CONFIGURATION"
 drush  updatedb -y
 drush cr
