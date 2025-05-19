@@ -1,0 +1,47 @@
+<VirtualHost  10.208.2.48:443>
+
+ServerName events-dev.cancer.gov
+ServerAlias events-dev
+
+        SSLEngine On
+    SSLCertificateFile        /local/content/apache/conf/ssl.crt/default.wildcard.cancer.gov.crt
+    SSLCertificateKeyFile     /local/content/apache/conf/ssl.key/default.wildcard.cancer.gov.key
+    #SSLCertificateFile        /local/content/apache/conf/ssl.crt/default.wildcard.cancer.gov.crt
+    #SSLCertificateKeyFile     /local/content/apache/conf/ssl.key/default.wildcard.cancer.gov.key
+    SSLCertificateChainFile   /local/content/apache/conf/ssl.crt/DigiCertCA.crt
+
+    CustomLog /local/content/apache/logs/eventsaccess.log combined env=!dontlog
+    ErrorLog /local/content/apache/logs/events/error.log
+        Include /local/content/apache/conf/logger.conf
+
+    <IfModule php_module>
+        AddType application/x-httpd-php .php
+        AddType application/x-httpd-php-source .phps
+        DirectoryIndex index.html index.php
+        php_value upload_max_filesize 100M
+        php_value post_max_size 100M
+    </IfModule>
+DocumentRoot "/tmp/nci-eventsreg/upgrade/maintenance"
+
+DirectoryIndex index.html index.htm index.php
+
+RewriteEngine On
+
+# Allow the actual maintenance page
+RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+
+# Allow assets (like your logo)
+RewriteCond %{REQUEST_URI} !^/assets/
+
+# Redirect everything else to the maintenance page
+RewriteRule ^.*$ /maintenance.html [R=302,L]
+
+        <Directory "/tmp/nci-eventsreg/upgrade">
+                Options FollowSymLinks MultiViews
+                AllowOverride All
+                Require all granted
+        </Directory>
+
+        UserDir disabled
+
+</VirtualHost>
