@@ -21,6 +21,9 @@ ServerAlias events-dev
         php_value upload_max_filesize 100M
         php_value post_max_size 100M
     </IfModule>
+AddType application/javascript .js
+AddType application/javascript .mjs
+
 DocumentRoot "/tmp/nci-eventsreg/upgrade/maintenance"
 
 DirectoryIndex index.html index.htm index.php
