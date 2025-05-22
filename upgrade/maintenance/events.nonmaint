@@ -1,7 +1,7 @@
-<VirtualHost  10.208.2.48:443>
+<VirtualHost  10.208.26.88:443>
 
-ServerName events-dev.cancer.gov
-ServerAlias events-dev
+ServerName events.cancer.gov
+ServerAlias events.nci.nih.gov
 
         SSLEngine On
     SSLCertificateFile        /local/content/apache/conf/ssl.crt/default.wildcard.cancer.gov.crt
