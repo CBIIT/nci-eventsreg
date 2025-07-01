@@ -4,6 +4,23 @@ use Drupal\node\NodeInterface;
 use Drupal\eventsreg\Utility\EventsRegPageMaker;
 use Drupal\user\Entity\User;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\webform\Plugin\WebformElement\File;
+use Drupal\webform\WebformSubmissionInterface;
+use Drupal\webform\Plugin\WebformElement\WebformElementManagerInterface;
+use Drupal\Core\Form\FormStateInterface;
+
+function eventsreg_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['#id']) && $form['#id'] === 'views-exposed-form-testing-homepage-block-1') {
+    // Remove CAPTCHA element if already injected.
+    if (isset($form['captcha'])) {
+      unset($form['captcha']);
+    }
+
+    // Prevent CAPTCHA from being added later in the render pipeline.
+    $form['#captcha'] = FALSE;
+  }
+}
+
 function eventsreg_preprocess_html(&$variables) {
 
   //$something = "We got this";
