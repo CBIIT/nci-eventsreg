@@ -10,17 +10,56 @@ use Drupal\webform\Plugin\WebformElement\WebformElementManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 function eventsreg_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  // disable captcha on search filter //
   if (isset($form['#id']) && $form['#id'] === 'views-exposed-form-testing-homepage-block-1') {
     // Remove CAPTCHA element if already injected.
     if (isset($form['captcha'])) {
       unset($form['captcha']);
     }
-
     // Prevent CAPTCHA from being added later in the render pipeline.
     $form['#captcha'] = FALSE;
   }
-}
 
+
+  // Filtering webform page elements so they are only displayed for the appropriate roles //
+  $user = \Drupal::currentUser();
+  $user_roles = $user->getRoles();
+
+  // Adding blocked file types for webform for users that have no permissions to access them //
+  $blocked_types = [
+    'webform_audio_file',
+    'webform_document_file',
+    'managed_file',
+    'webform_image_file',
+    'webform_video_file',
+  ];
+
+  $allowed_roles = [
+    'administrator',
+    'icf_editor',
+    'content_editor',
+  ];
+
+  if (empty(array_intersect($user_roles, $allowed_roles)) && isset($form['elements'])) {
+  $remove_disallowed_file_elements = function (&$elements) use (&$remove_disallowed_file_elements, $blocked_types) {
+    foreach ($elements as $key => &$element) {
+      if (is_array($element)) {
+        // Check for element type.
+        if (isset($element['#type']) && in_array($element['#type'], $blocked_types)) {
+          unset($elements[$key]);
+        }
+        // Recurse deeper if this element has children.
+        elseif (isset($element) && is_array($element)) {
+          $remove_disallowed_file_elements($element);
+        }
+      }
+    }
+  };
+
+  // Start recursive cleanup inside 'elements'.
+  $remove_disallowed_file_elements($form['elements']);
+  }
+}
 function eventsreg_preprocess_html(&$variables) {
 
   //$something = "We got this";
