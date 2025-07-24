@@ -59,6 +59,16 @@ function eventsreg_form_alter(array &$form, FormStateInterface $form_state, $for
   // Start recursive cleanup inside 'elements'.
   $remove_disallowed_file_elements($form['elements']);
   }
+
+  // Move captcha button before submit button and add space //
+  if (isset($form['captcha']) && isset($form['actions']['submit'])) {
+    // Move CAPTCHA just above the submit button
+    $form['actions']['captcha'] = $form['captcha'];
+    unset($form['captcha']);
+    $form['actions']['captcha']['#weight'] = -10;
+
+    // Add spacer markup before submit button
+  }
 }
 function eventsreg_preprocess_html(&$variables) {
 
