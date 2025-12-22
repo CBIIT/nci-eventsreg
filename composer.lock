@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e2b5a672378472896b9bb686207cce5b",
+    "content-hash": "6e1649f8d3c3f3617aedd40529d11a78",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1533,6 +1533,54 @@
                 "source": "https://github.com/dompdf/dompdf/tree/v2.0.8"
             },
             "time": "2024-04-29T13:06:17+00:00"
+        },
+        {
+            "name": "drupal/add_to_head",
+            "version": "1.0.0-beta1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/add_to_head.git",
+                "reference": "8.x-1.0-beta1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/add_to_head-8.x-1.0-beta1.zip",
+                "reference": "8.x-1.0-beta1",
+                "shasum": "409fe9bca25ce22a3bcb7e0a947b8bc193b49c1b"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.0-beta1",
+                    "datestamp": "1672935098",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "baikho",
+                    "homepage": "https://www.drupal.org/user/2727459"
+                },
+                {
+                    "name": "nicholasThompson",
+                    "homepage": "https://www.drupal.org/user/59351"
+                }
+            ],
+            "description": "Allows arbitrary insertion of code into the head of specific pages",
+            "homepage": "https://www.drupal.org/project/add_to_head",
+            "support": {
+                "source": "https://git.drupalcode.org/project/add_to_head"
+            }
         },
         {
             "name": "drupal/admin_toolbar",
@@ -4370,6 +4418,51 @@
             "homepage": "https://www.drupal.org/project/mailsystem",
             "support": {
                 "source": "https://git.drupalcode.org/project/mailsystem"
+            }
+        },
+        {
+            "name": "drupal/message_banner",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/message_banner.git",
+                "reference": "2.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/message_banner-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "c4ea7bf14d391b2f07243f8346a27be8693ae900"
+            },
+            "require": {
+                "drupal/core": "^8.8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.0",
+                    "datestamp": "1694507278",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Sophie Shanahan-Kluth",
+                    "homepage": "https://www.drupal.org/u/sophie.sk"
+                }
+            ],
+            "description": "Display a message banner to site visitors.",
+            "homepage": "http://drupal.org/project/message_banner",
+            "support": {
+                "source": "https://git.drupalcode.org/project/message_banner",
+                "issues": "https://www.drupal.org/project/issues/message_banner"
             }
         },
         {
@@ -11660,6 +11753,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "drupal/add_to_head": 10,
         "drupal/calendar_links_token": 15,
         "drupal/content_sync": 5,
         "drupal/default_content": 15,
@@ -11670,7 +11764,7 @@
     },
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
