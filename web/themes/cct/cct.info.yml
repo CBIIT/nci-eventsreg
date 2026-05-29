@@ -22,5 +22,5 @@ regions:
 libraries:
   - 'cct/global-styling'
   - 'cct/global-scripts'
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 
