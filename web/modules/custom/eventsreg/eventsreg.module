@@ -320,7 +320,7 @@ function getEventsResults($entity_id) {
 function getEventsData($entity_id) {
 
  	$query = "SELECT gcfd.entity_id, gcfd.label as acronym, nfea.field_event_active_value as active, nfedt.field_event_date_time_value as event_date, nfehl.field_event_home_link_uri as event_home_link_uri, nb.body_value as description, nb.body_summary as title ";
-	$query .= "FROM group_content_field_data gcfd, node__field_event_active nfea, ";
+	$query .= "FROM group_relationship_field_data gcfd, node__field_event_active nfea, ";
 	$query .= "node__field_event_date_time nfedt, node__field_event_home_link nfehl, node__body nb ";
 	$query .= "WHERE gcfd.gid=$entity_id and gcfd.type = 'organization-group_node-event' ";
 	$query .= "and gcfd.entity_id = nfea.entity_id ";
@@ -357,7 +357,7 @@ function getUserEventsSites() {
 //$query .= "and type='organization-group_membership';";
 
 $query = "SELECT q1.gid, gfoc.field_org_code_value as org_code, gfd.label as name, gfows.field_organization_web_site_uri as site_uri, gfows.field_organization_web_site_title as site_title from ( ";
-$query .= "SELECT distinct(gid) as gid FROM group_content_field_data gcfd where gcfd.entity_id = $uid and gcfd.type='organization-group_membership' ";
+$query .= "SELECT distinct(gid) as gid FROM group_relationship_field_data gcfd where gcfd.entity_id = $uid and gcfd.type='organization-group_membership' ";
 $query .= ") as q1, groups_field_data gfd, group__field_organization_web_site gfows, group__field_org_code gfoc ";
 $query .= "Where q1.gid = gfd.id ";
 $query .= "and q1.gid = gfows.entity_id ";
