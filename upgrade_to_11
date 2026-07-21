@@ -3,10 +3,6 @@ rm -rf web/modules/custom/eventsreg
 rm -rf web/themes/cct
 cp -R drupal11/web/modules/custom/eventsreg web/modules/custom
 cp -R drupal11/web/themes/cct web/themes
-echo "reloading drupal 10 db"
-drush sql-drop -y
-MYSQL_CMD="$(drush sql:connect)"
-eval "$MYSQL_CMD" < /tmp/backup-2026-06-09_sanitized.sql
 cp drupal11/composer.* ./
 echo "running composer 10 install"
 composer update
