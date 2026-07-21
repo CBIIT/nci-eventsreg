@@ -1,4 +1,9 @@
 #/bin/bash
+rm -rf web/modules/custom/eventsreg
+rm -rf web/themes/cct
+cp -R drupal11/web/modules/custom/eventsreg web/modules/custom
+cp -R drupal11/web/themes/cct web/themes
+
 composer update
 
 # Export config FIRST before anything is changed.
@@ -259,7 +264,3 @@ PHPEOF
 vendor/bin/drush php:script /tmp/fix_groups_upgrade.php
 vendor/bin/drush cr
 echo "Groups 2.x fixes complete"
-rm -rf web/modules/custom/eventsreg
-rm -rf web/themes/cct
-cp -R drupal11/web/modules/custom/eventsreg web/modules/custom
-cp -R drupal11/web/themes/cct web/themes
