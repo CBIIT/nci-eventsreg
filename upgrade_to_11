@@ -3,7 +3,12 @@ rm -rf web/modules/custom/eventsreg
 rm -rf web/themes/cct
 cp -R drupal11/web/modules/custom/eventsreg web/modules/custom
 cp -R drupal11/web/themes/cct web/themes
-
+echo "reloading drupal 10 db"
+drush sql-drop -y
+MYSQL_CMD="$(drush sql:connect)"
+eval "$MYSQL_CMD" < /tmp/backup-2026-06-09_sanitized.sql
+cp drupal11/composer.* ./
+echo "running composer 10 install"
 composer update
 
 # Export config FIRST before anything is changed.
@@ -15,6 +20,7 @@ drush ev "\Drupal::service('module_installer')->uninstall(['calendar_links_token
 drush cr
 cp drupal11/composer11.json ./composer.json
 cp drupal11/composer11.lock ./composer.lock
+
 composer require drupal/group:^2.3 drupal/flexible_permissions:^2.0 -W
 composer require drupal/variationcache:^1.5
 rm -rf web/sites/default/files/php/*
@@ -264,3 +270,4 @@ PHPEOF
 vendor/bin/drush php:script /tmp/fix_groups_upgrade.php
 vendor/bin/drush cr
 echo "Groups 2.x fixes complete"
+
