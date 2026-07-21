@@ -1,9 +1,4 @@
 #/bin/bash
-git clone https://github.com/cbiit/nci-eventsreg drupal11
-cd drupal11
-git checkout drupal11
-cd ..
-echo "running composer 10 install"
 composer update
 
 # Export config FIRST before anything is changed.
