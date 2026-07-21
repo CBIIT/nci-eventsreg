@@ -1,8 +1,4 @@
 #/bin/bash
-echo "reloading drupal 10 db"
-drush sql-drop -y
-MYSQL_CMD="$(drush sql:connect)"
-eval "$MYSQL_CMD" < /tmp/backup-2026-06-09_sanitized.sql
 cp /tmp/nci-eventsreg/composer.* ./
 echo "running composer 10 install"
 composer update
