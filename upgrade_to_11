@@ -8,7 +8,8 @@ drush cex -y
 
 drush ev "\Drupal::service('module_installer')->uninstall(['calendar_links_token','gdoc_field','doc_serialization']);"
 drush cr
-cp drupal11/composer.* ./
+cp drupal11/composer11.json ./composer.json
+cp drupal11/composer11.lock ./composer.lock
 composer require drupal/group:^2.3 drupal/flexible_permissions:^2.0 -W
 composer require drupal/variationcache:^1.5
 rm -rf web/sites/default/files/php/*
