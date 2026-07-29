@@ -5,6 +5,7 @@ cp -R drupal11/web/modules/custom/eventsreg web/modules/custom
 cp -R drupal11/web/themes/cct web/themes
 cp drupal11/composer.* ./
 rm -rf web/modules/typed_data
+rm -rf web/modules/pdf
 echo "running composer 10 install"
 composer update
 
