@@ -6,6 +6,7 @@ cp -R drupal11/web/themes/cct web/themes
 cp drupal11/composer.* ./
 rm -rf web/modules/typed_data
 rm -rf web/modules/pdf
+rm -rf web/modules/add_to_head
 echo "running composer 10 install"
 composer update
 
