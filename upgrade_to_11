@@ -7,7 +7,12 @@ cp drupal11/composer.* ./
 rm -rf web/modules/typed_data
 rm -rf web/modules/pdf
 rm -rf web/modules/add_to_head
+rm -rf web/modules/google_analytics_reports
+rm -rf web/modules/nodeaccess
+rm -rf web/modules/message_banner
 rm -rf web/modules/rules
+rm -rf web/modules/charts
+
 echo "running composer 10 install"
 composer update
 
