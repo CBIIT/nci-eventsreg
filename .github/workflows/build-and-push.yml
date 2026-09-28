@@ -2,6 +2,9 @@ name: Test AWS Connection
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - drupal11
 
 permissions:
   id-token: write
