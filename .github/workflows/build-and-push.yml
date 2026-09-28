@@ -1,20 +1,65 @@
-name: Test AWS Connection
+name: Build and Push Docker Image
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - drupal11
+      - drupal_11
 
 permissions:
   id-token: write
   contents: read
+  packages: read
 
 jobs:
-  test-aws:
+  build-base-image:
+    name: Build Base Image
     runs-on: ubuntu-latest
-
     steps:
+      - name: Checkout code from the other repository
+        uses: actions/checkout@v3
+        with:
+          repository: cbiit/drupal-docker
+          ref: base
+          path: ./drupal-docker
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build the base image
+        id: build-image
+        run: |
+          docker build --no-cache -t base ./drupal-docker
+          docker save base > base-image.tar
+
+      - name: Upload base image
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-image
+          path: base-image.tar
+
+  build-final-image:
+    needs: build-base-image
+    name: Build Final Image
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+    steps:
+      - name: Download base image
+        uses: actions/download-artifact@v4
+        with:
+          name: base-image
+
+      - name: Load base image
+        run: |
+          docker load < base-image.tar
+
+      - name: Checkout code from this repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -22,6 +67,54 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           role-session-name: GitHubActions
 
-      - name: Verify AWS identity
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2                  
+
+      - name: Build and push the drupal image
+        id: build-image
+        env:
+          ECR_REGISTRY: 124355660537.dkr.ecr.us-east-1.amazonaws.com
+          ECR_REPOSITORY: drupal
+          IMAGE_TAG: dev
         run: |
-          aws sts get-caller-identity
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          echo "Building and pushing $IMAGE"
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+          docker build --no-cache -t $IMAGE ./docker
+          docker push $IMAGE
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+
+  start-new-container:
+    needs: build-final-image
+    runs-on: ubuntu-latest
+    name: Start New Container    
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          role-session-name: GitHubActions        
+
+      - name: Get ECS Service Name
+        id: get-service-name
+        run: |
+          SERVICE_ARN=$(aws ecs list-services --cluster dev --query "serviceArns[0]" --output text)
+          SERVICE_NAME=$(basename $SERVICE_ARN)
+          echo "Service name: $SERVICE_NAME"
+          echo "service_name=$SERVICE_NAME" >> $GITHUB_OUTPUT
+
+      - name: Deploy to ECS
+        env:
+          AWS_REGION: us-east-1
+          CLUSTER_NAME: dev
+          SERVICE_NAME: ${{ steps.get-service-name.outputs.service_name }}
+          CONTAINER_NAME: drupal
+          IMAGE_URI: ${{ needs.build-final-image.outputs.image }}
+        run: |
+          echo "Deploying $IMAGE_URI to ECS service $SERVICE_NAME"
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service $SERVICE_NAME \
+            --force-new-deployment
