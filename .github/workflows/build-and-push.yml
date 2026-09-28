@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - drupal_11
+      - drupal11
 
 permissions:
   id-token: write
