@@ -1,0 +1,67 @@
+use Aws\SecretsManager\SecretsManagerClient;
+use Aws\Exception\AwsException;
+
+// Create a Secrets Manager client
+$client = new SecretsManagerClient([
+    'version' => 'latest',
+    'region'  => 'us-east-1',  // Replace with your region
+]);
+
+// Retrieve the secret name from environment variables
+$secretId = getenv('rds_secret'); // This should contain the ARN or name of your secret
+
+if (!$secretId) {
+    error_log('Error: rds_secret environment variable not set.');
+} else {
+    try {
+        // Retrieve the secret value from AWS Secrets Manager
+        $result = $client->getSecretValue([
+            'SecretId' => $secretId, // Use the secret ID directly
+        ]);
+
+        // The secret is stored as a JSON string, decode it
+        if (isset($result['SecretString'])) {
+            $secret = json_decode($result['SecretString'], true); // Decode the actual secret
+            $db_username = $secret['username'];
+            $db_password = $secret['password'];
+        }
+
+    } catch (AwsException $e) {
+        // Handle errors (e.g., log them)
+        error_log('AWS SDK Error: ' . $e->getMessage());
+    }
+}
+
+
+
+
+$settings['s3fs.access_key'] = getenv('s3_access_key');
+$settings['s3fs.secret_key'] = getenv('s3_secret_key');
+$settings['s3fs.use_s3_for_public'] = FALSE;
+$settings['s3fs.upload_as_public'] = FALSE;        
+$settings['s3fs.upload_as_private'] = TRUE;
+$settings['s3fs.use_s3_for_private'] = TRUE;
+
+$databases['default']['default'] = array(
+  'database' => getenv('db_name'),
+  'username' => $db_username,
+  'password' => $db_password,
+  'host' => getenv('db_host'),
+  'port' => getenv('db_port'),
+  'driver' => 'mysql',
+  'prefix' => '',
+);
+
+$settings['config_sync_directory'] = $app_root.'/../config/sync';
+$settings['hash_salt'] =  getenv('hash_salt');
+global $content_directories;
+$settings['file_private_path'] = $app_root . '/' . $site_path . '/files';
+$content_directories['sync'] = $app_root.'/../content/sync';
+$config_directories['sync'] = $app_root.'/../config/sync';
+$settings['sync']="";
+$config_directories['sync'] = '../config';
+
+$settings['cookie_lifetime'] = 0;
+$settings['cookie_domain'] = '';
+$settings['cookie_httponly'] = TRUE;
+$config['system.logging']['error_level'] = 'hide';
