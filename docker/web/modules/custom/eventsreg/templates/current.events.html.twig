@@ -1,0 +1,49 @@
+<div class="current-events-container">
+	<h2>Events Registration Websites</h2>
+
+	<p>The <a href="https://events.cancer.gov" title="http://events.cancer.gov" alt="https://events.cancer.gov">events.cancer.gov</a> website provides registration services for NCI-sponsored events or conferences for the NCI community. Registration services include collecting contact information from attendees via an online form. Attendee information can be downloaded and processed offline for handling logistics related to the event.</p>
+	 
+	<p style="margin-bottom:10px;">If your Division, Office, or Center is interested in the creation of an event website, please <a href="https://service.cancer.gov/ncisp?id=nci_sc_cat_item&sys_id=2a8376f4db5d63002cbcfb0e0f96193f" title="submit a ticket to NCI at Your Service" alt="submit a ticket to NCI at Your Service" target="_blank">submit a ticket to NCI at Your Service</a>.</p>
+
+    <p></p>
+	
+	<div class="flex-container">
+		{% for site in sites %}
+		{#
+		{% if loop.first or loop.index - 1 is divisible by(3) %}
+		  <div>
+		{% endif%}
+		#}
+	      <div>
+	        <div class="thumbnail card">
+	          <div class="card__content">
+	            <h4 class="card__title" nid="{{ site.nid }}">{{ site.title }}</h4>
+	            <p>{{ site.description|striptags }}</p>
+	            <p><strong>Event Date:  </strong>{{ site.event_date|date("F j, Y") }}</p>
+	            {#
+	            <p><strong>Event Date:  </strong>{{ site.event_date|date("F j, Y") }}</p>
+	            <p><strong>nid:  </strong>{{ site.nid }}</p>
+	            <p><strong>Loop Index0:  </strong>{{ loop.index0 }}</p>
+	            <p><strong>Loop Index:  </strong>{{ loop.index }}</p>
+	            <p><strong>Loop First:  </strong>{% if loop.first %}yes{% else %}no{% endif%}</p>
+	            <p><strong>Loop Last:  </strong>{% if loop.last %}yes{% else %}no{% endif%}</p>
+	            <p><strong>div begining:  </strong>{% if loop.first or loop.index - 1 is divisible by(3) %}yes{% else %}no{% endif%}</p>
+	            <p><strong>div ending:  </strong>{% if loop.last or loop.index is divisible by(3) %}yes{% else %}no{% endif%}</p>
+	        	#}
+	          </div>
+	          <footer class="card__footer">
+	            <a href="{{ site.url }}" class="btn btn-primary">Visit Site</a>&nbsp;&nbsp;&nbsp;
+		            {% for link in site.links %}
+			        	<a style="padding-left:5px;float:right;font-size:8px;" href="{{ link.url }}"><span style="font-size:8px;">{{ link.title }}</span></a>
+		            {% endfor %}
+	          </footer>
+	        </div>
+	      </div>
+	      {#}
+	  	{% if loop.last or loop.index is divisible by(3) %}
+	      </div>
+	    {% endif%}
+	    #}
+		{% endfor %}
+	</div>
+</div>

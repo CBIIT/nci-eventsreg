@@ -1,0 +1,58 @@
+table.table {
+	width: 95%;
+}
+
+.table > thead > tr {
+	font-weight:bold;
+	text-align:center;
+}
+table.table > thead > tr > td {
+	vertical-align:middle;
+}
+
+table.table > tbody > tr.organization {
+	font-weight:bold;
+	background-color:Gainsboro;
+}
+table.table > tbody > tr > td {
+	vertical-align:middle;
+}
+table.table > tbody > tr > td:nth-child(7),
+table.table > tbody > tr > td:nth-child(8) {
+	text-align: center;
+}
+tr.extra-registration > td:nth-child(1), 
+tr.extra-registration > td:nth-child(2) {
+	text-align: center;
+}
+
+tr.website-active {
+	background-color:honeydew;
+}
+tr.website-inactive {
+	background-color:seashell;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

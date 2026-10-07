@@ -1,0 +1,11 @@
+name: 'Google Analytics Reports API'
+type: module
+description: 'API to access statistics from the <a href="https://developers.google.com/analytics/devguides/reporting/core/v4/">Google Analytics Core Reporting API</a>.'
+package: Statistics
+core_version_requirement: ^8 || ^9
+configure: google_analytics_reports_api.settings
+
+# Information added by Drupal.org packaging script on 2021-12-01
+version: '4.0.0-alpha1'
+project: 'google_analytics_reports'
+datestamp: 1638371201

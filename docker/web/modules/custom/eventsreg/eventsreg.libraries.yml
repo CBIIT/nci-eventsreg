@@ -1,0 +1,8 @@
+current-events.library:
+  css:
+    theme:
+      css/current-events.css: {}
+events.library:
+  css:
+    theme:
+      css/events.css: {}

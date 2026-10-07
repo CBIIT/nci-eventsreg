@@ -1,0 +1,69 @@
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-container > div {
+  width: 335px;
+  margin: 10px;
+}
+
+.current-events-container h2 {
+  color: #C6375E;
+}
+
+.current-events-container {
+	padding: 0 25px;
+}
+
+.card {
+  border-radius: 0;
+  border: none;
+  padding: 0;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.298039);
+}
+.card__header {
+  position: relative;
+}
+.card__content {
+  padding: 20px 20px;
+  /*height: 100%;
+  min-height: 200px; */
+}
+.card__footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+}
+.card__title {
+  margin: 0 0 15px;
+}
+/*
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px)  
+{ 
+
+.card__content {
+  padding: 20px 20px;
+  height: 100%;
+  min-height: 200px;
+}
+*/
+
+@media screen and (max-width: 1200px) {
+  .flex-container > div {
+    width: 270px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .flex-container > div {
+    width: 300px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .flex-container > div {
+    width: 400px;
+  }
+}
