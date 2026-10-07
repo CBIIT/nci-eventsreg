@@ -64,6 +64,7 @@
         "drupal/recaptcha_element": "^1.1",
         "drupal/redirect_after_login": "^3.0",
         "drupal/rules": "^4.0",
+	"drupal/s3fs":"^3.11",
         "drupal/scheduler": "^1.6",
         "drupal/select2": "^2.0",
         "drupal/seven": "^2.0@beta",
