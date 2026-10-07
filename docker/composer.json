@@ -16,9 +16,10 @@
         }
     ],
     "require": {
+	"aws/aws-sdk-php": "^3.0",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.7",
-        "dompdf/dompdf": "^2.0.0",
+	"dompdf/dompdf": "^3.1",
         "drupal/add_to_head": "^1.0@beta",
         "drupal/admin_toolbar": "^3.6",
         "drupal/asset_injector": "^2.21",
@@ -30,9 +31,9 @@
         "drupal/captcha": "^2.0",
         "drupal/ckeditor_lts": "^1.0",
         "drupal/color": "^2.0@alpha",
-        "drupal/core-composer-scaffold": "11.3.11",
-        "drupal/core-project-message": "11.3.11",
-        "drupal/core-recommended": "11.3.11",
+	"drupal/core-composer-scaffold": "^11.3",
+	"drupal/core-project-message": "^11.3",
+	"drupal/core-recommended": "^11.3",
         "drupal/csv_serialization": "^4.0",
         "drupal/default_content": "^2.0@beta",
         "drupal/default_content_deploy": "^2.1",
@@ -93,30 +94,9 @@
             "composer/installers": true,
             "cweagans/composer-patches": true,
             "drupal/core-composer-scaffold": true,
-            "drupal/core-project-message": true
+            "drupal/core-project-message": true,
+            "symfony/runtime": true
         }
-    },
-    "autoload": {
-        "classmap": [
-            "scripts/composer/ScriptHandler.php"
-        ],
-        "files": ["load.environment.php"]
-    },
-    "scripts": {
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
-        "pre-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "pre-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "post-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ],
-        "post-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
-            "drush cr"
-        ]
     },
     "extra": {
         "patches": {
