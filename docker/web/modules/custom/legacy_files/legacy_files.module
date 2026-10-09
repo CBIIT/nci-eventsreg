@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Implements hook_file_download().
+ */
+function legacy_files_file_download($uri) {
+  if (str_starts_with($uri, 'private://legacy_public/') && !str_contains($uri, '..')) {
+    return [
+      'Content-Type' => \Drupal::service('file.mime_type.guesser')->guessMimeType($uri),
+      'Cache-Control' => 'public, max-age=86400',
+    ];
+  }
+}

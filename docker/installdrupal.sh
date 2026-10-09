@@ -8,8 +8,7 @@ else
     cp $code_path/docker/composer.lock ./
     cp $code_path/docker/composer.json ./
     cp -r $code_path/docker/web ./
-    # cp $code_path/docker/htaccess.patch ./web
-    cp .htacccess web
+    cp $code_path/docker/web/.htaccess ./web
     chmod 644 web/.htaccess
     composer config --no-plugins allow-plugins.cweagans/composer-patches true
     composer install

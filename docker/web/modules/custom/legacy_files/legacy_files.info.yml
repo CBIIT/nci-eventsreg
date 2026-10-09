@@ -1,0 +1,3 @@
+name: Legacy files access
+type: module
+core_version_requirement: ^10 || ^11
