@@ -41,6 +41,8 @@ $settings['s3fs.use_s3_for_public'] = TRUE;
 $settings['s3fs.upload_as_public'] = FALSE;        
 $settings['s3fs.upload_as_private'] = TRUE;
 $settings['s3fs.use_s3_for_private'] = TRUE;
+$config['s3fs.settings']['presigned_urls'] = '3600|s3fs-public/*';
+$config['s3fs.settings']['use_https'] = TRUE;
 
 $databases['default']['default'] = array(
   'database' => getenv('db_name'),
