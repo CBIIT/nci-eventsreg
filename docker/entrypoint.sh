@@ -37,6 +37,10 @@ mkdir -p web/sites/default/assets
 chown -R apache:apache web/sites/default/assets
 chmod -R u+rwX web/sites/default/assets
 
+# Disable JavaScript aggregation on every ECS deployment.
+echo "Disabling JavaScript aggregation"
+drush cset system.performance js.preprocess 0 -y
+
 # Rebuild Drupal caches.
 # Asset Injector's cache-flush hook deletes its generated files.
 echo "Rebuilding Drupal caches"
