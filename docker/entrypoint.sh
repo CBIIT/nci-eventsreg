@@ -45,8 +45,9 @@ drush cset system.performance js.preprocess 0 -y
 # Asset Injector's cache-flush hook deletes its generated files.
 echo "Rebuilding Drupal caches"
 
-su -s /bin/sh apache -c \
-  'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php cr'
+# su -s /bin/sh apache -c \
+#   'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php cr'
+php -d memory_limit=2G vendor/drush/drush/drush.php cr
 
 # Explicitly regenerate Asset Injector CSS and JS.
 # This runs AFTER drush cr because cache rebuilding deletes these files.
