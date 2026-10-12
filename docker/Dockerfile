@@ -1,7 +1,7 @@
 FROM base:latest
 
 # Add required PHP modules and Apache utils
-RUN apk add apache2-utils libbz2 php85-ctype php85-exif php85-fileinfo php85-posix php85-xmlreader php85-xmlwriter
+RUN apk add apache2-utils libbz2 mariadb-connector-c php85-ctype php85-exif php85-fileinfo php85-posix php85-xmlreader php85-xmlwriter
 
 # Copy configs and scripts
 COPY 000-default.conf /etc/apache2/conf.d
