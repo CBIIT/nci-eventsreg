@@ -1,13 +1,10 @@
 #!/bin/sh
+set -e
+
+cd /var/www/drupal
 
 # Start Postfix.
 postfix start
-
-# Ensure the Drupal assets directories exist before any Drush commands.
-mkdir -p /var/www/drupal/web/sites/default/assets/asset_injector/css
-mkdir -p /var/www/drupal/web/sites/default/assets/asset_injector/js
-chown -R apache:apache /var/www/drupal/web/sites/default/assets
-chmod -R u+rwX /var/www/drupal/web/sites/default/assets
 
 # Enable the Stable9 theme.
 echo "Installing stable9"
@@ -30,12 +27,35 @@ drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage
 drush en legacy_files -y
 drush en s3fs -y
 
-# Clear stale Asset Injector library discovery definitions and page caches.
-su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php php:eval "\Drupal::service(\"library.discovery.collector\")->clear(); \Drupal::service(\"cache.render\")->deleteAll(); \Drupal::service(\"cache.dynamic_page_cache\")->deleteAll(); \Drupal::service(\"cache.page\")->deleteAll();"'
+# Prepare Asset Injector directories AFTER module updates.
+echo "Preparing Asset Injector directories"
+
+mkdir -p web/sites/default/assets/asset_injector/css
+mkdir -p web/sites/default/assets/asset_injector/js
+
+chown -R apache:apache web/sites/default/assets
+chmod -R u+rwX web/sites/default/assets
 
 # Rebuild Drupal caches as Apache.
-su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php cr'
+# This also regenerates Asset Injector CSS/JS files.
+echo "Rebuilding Drupal caches"
 
-# Start Apache.
-httpd -D FOREGROUND &
-wait
+su -s /bin/sh apache -c \
+  'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php cr'
+
+# Clear stale library definitions AFTER asset generation.
+echo "Clearing library discovery and page caches"
+
+su -s /bin/sh apache -c \
+  'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php php:eval "\Drupal::service(\"library.discovery.collector\")->clear(); \Drupal::service(\"cache.render\")->deleteAll(); \Drupal::service(\"cache.dynamic_page_cache\")->deleteAll(); \Drupal::service(\"cache.page\")->deleteAll();"'
+
+# Verify CSS files were generated.
+echo "Asset Injector CSS files:"
+find web/sites/default/assets/asset_injector/css -name '*.css' | wc -l
+
+echo "Asset Injector JS files:"
+find web/sites/default/assets/asset_injector/js -name '*.js' | wc -l
+
+# Start Apache in the foreground.
+echo "Starting Apache"
+exec httpd -D FOREGROUND
