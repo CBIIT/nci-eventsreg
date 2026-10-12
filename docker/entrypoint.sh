@@ -1,7 +1,17 @@
+
 #!/bin/sh
+
+cd /var/www/drupal
 
 # Start Postfix.
 postfix start
+
+# Ensure the Drupal assets directories exist BEFORE Drush runs.
+echo "Preparing Drupal asset directories"
+mkdir -p /var/www/drupal/web/sites/default/assets/asset_injector/css
+mkdir -p /var/www/drupal/web/sites/default/assets/asset_injector/js
+chown -R apache:apache /var/www/drupal/web/sites/default/assets
+chmod -R u+rwX /var/www/drupal/web/sites/default/assets
 
 # Enable the Stable9 theme.
 echo "Installing stable9"
@@ -23,10 +33,6 @@ drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage
 # Enable required modules.
 drush en legacy_files -y
 drush en s3fs -y
-
-# Ensure the Drupal assets directory exists and is writable.
-mkdir -p /var/www/drupal/web/sites/default/assets
-chown -R apache:apache /var/www/drupal/web/sites/default/assets
 
 # Clear stale Asset Injector library discovery definitions.
 su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php php:eval "\Drupal::service(\"library.discovery.collector\")->clear();"'
