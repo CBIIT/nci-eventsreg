@@ -1,13 +1,9 @@
-
 #!/bin/sh
-
-cd /var/www/drupal
 
 # Start Postfix.
 postfix start
 
-# Ensure the Drupal assets directories exist BEFORE Drush runs.
-echo "Preparing Drupal asset directories"
+# Ensure the Drupal assets directories exist before any Drush commands.
 mkdir -p /var/www/drupal/web/sites/default/assets/asset_injector/css
 mkdir -p /var/www/drupal/web/sites/default/assets/asset_injector/js
 chown -R apache:apache /var/www/drupal/web/sites/default/assets
@@ -34,8 +30,8 @@ drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage
 drush en legacy_files -y
 drush en s3fs -y
 
-# Clear stale Asset Injector library discovery definitions.
-su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php php:eval "\Drupal::service(\"library.discovery.collector\")->clear();"'
+# Clear stale Asset Injector library discovery definitions and page caches.
+su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php php:eval "\Drupal::service(\"library.discovery.collector\")->clear(); \Drupal::service(\"cache.render\")->deleteAll(); \Drupal::service(\"cache.dynamic_page_cache\")->deleteAll(); \Drupal::service(\"cache.page\")->deleteAll();"'
 
 # Rebuild Drupal caches as Apache.
 su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=2G vendor/drush/drush/drush.php cr'
