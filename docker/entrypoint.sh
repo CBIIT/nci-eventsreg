@@ -11,6 +11,6 @@ drush php:eval '$config = \Drupal::configFactory()->getEditable("core.extension"
 drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage_config")->loadMultiple() as $f) { if (in_array($f->getType(), ["image", "file"], TRUE)) { $f->setSetting("uri_scheme", "private"); $f->save(); echo $f->id() . " => private\n"; } }'
 drush en legacy_files
 drush en s3fs
-drush cr
+su -s /bin/sh apache -c 'cd /var/www/drupal && php -d memory_limit=1G vendor/drush/drush/drush.php cr'
 httpd -D FOREGROUND &
 wait
