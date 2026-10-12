@@ -62,8 +62,7 @@ AddEncoding gzip svgz
 <IfModule mod_rewrite.c>
 RewriteEngine On
 # TEST: Is Apache reading this .htaccess?
-RewriteRule ^sites/default/files/(?!styles/|css/|js/|asset_injector/)(.*)$ /system/
-files/legacy_public/$1 [R=302,L]
+RewriteRule ^sites/default/files/(?!styles/|css/|js/|asset_injector/)(.*)$ /system/files/legacy_public/$1 [R=302,L]
 RewriteRule ^sites/default/files/asset_injector/(.*)$ sites/default/assets/asset_injector/$1 [L]
 # Redirect legacy public files to Drupal private file handler.
   # Set "protossl" to "s" if we were accessed via https://.  This is used later
