@@ -57,10 +57,8 @@ $databases['default']['default'] = array(
 $settings['config_sync_directory'] = $app_root.'/../config/sync';
 $settings['hash_salt'] =  getenv('hash_salt');
 global $content_directories;
-mkdir -p sites/default/private
-chown apache:apache sites/default/private
 
-$settings['file_private_path'] = sites/default/private;
+$settings['file_private_path'] = 'sites/default/private';
 $content_directories['sync'] = $app_root.'/../content/sync';
 $config_directories['sync'] = $app_root.'/../config/sync';
 $settings['sync']="";

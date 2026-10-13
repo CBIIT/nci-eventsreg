@@ -23,6 +23,7 @@ drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage
 # Run database updates.
 su -s /bin/sh apache -c "cd /var/www/drupal/web && drush updb -y"
 
+drush pmu webform_jqueryui_buttons -y
 # Enable required modules.
 drush en legacy_files -y
 drush en s3fs -y
@@ -30,8 +31,9 @@ drush en s3fs -y
 # Ensure the public Asset Injector directory is writable.
 # Asset Injector's installation checks still reference public://.
 mkdir -p web/sites/default/files/asset_injector
+mkdir -p web/sites/default/private
 chown -R apache:apache web/sites/default/files/asset_injector
-chown -R apache:apache web/sites/default/files
+chown -R apache:apache web/sites/default
 
 # Ensure Drupal's assets directory is writable.
 # mkdir -p web/sites/default/assets
