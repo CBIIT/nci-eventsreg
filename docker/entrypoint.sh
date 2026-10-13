@@ -21,7 +21,7 @@ drush php:eval '$config = \Drupal::configFactory()->getEditable("core.extension"
 drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage_config")->loadMultiple() as $f) { if (in_array($f->getType(), ["image", "file"], TRUE)) { $f->setSetting("uri_scheme", "private"); $f->save(); echo $f->id() . " => private\n"; } }'
 
 # Run database updates.
-drush updb -y || echo "WARNING: Drupal database updates failed"
+su -s /bin/sh apache -c "cd /var/www/drupal/web && drush updb -y"
 
 # Enable required modules.
 drush en legacy_files -y
