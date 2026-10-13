@@ -6,3 +6,14 @@
  *
  * Place your custom PHP code in this file.
  */
+/**
+ * Implements hook_css_alter().
+ */
+function cct_css_alter(array &$css, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
+  foreach ($css as &$item) {
+    if (str_contains($item['data'] ?? '', 'asset_injector/css/')) {
+      $item['group'] = CSS_THEME;
+      $item['weight'] = 1000;
+    }
+  }
+}
