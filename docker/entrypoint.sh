@@ -9,9 +9,6 @@ postfix start
 echo "Installing stable9"
 drush theme:enable stable9
 
-# Run database updates.
-# Existing database update errors must not prevent Apache startup.
-drush updb -y || echo "WARNING: Drupal database updates failed"
 
 # Remove obsolete modules from core.extension.
 drush php:eval '$config = \Drupal::configFactory()->getEditable("core.extension"); $modules = $config->get("module"); unset($modules["content_sync"]); $config->set("module", $modules)->save();'
@@ -23,6 +20,9 @@ drush php:eval '$config = \Drupal::configFactory()->getEditable("core.extension"
 # Set image and file field storage to private.
 drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage_config")->loadMultiple() as $f) { if (in_array($f->getType(), ["image", "file"], TRUE)) { $f->setSetting("uri_scheme", "private"); $f->save(); echo $f->id() . " => private\n"; } }'
 
+# Run database updates.
+drush updb -y || echo "WARNING: Drupal database updates failed"
+
 # Enable required modules.
 drush en legacy_files -y
 drush en s3fs -y
@@ -31,11 +31,12 @@ drush en s3fs -y
 # Asset Injector's installation checks still reference public://.
 mkdir -p web/sites/default/files/asset_injector
 chown -R apache:apache web/sites/default/files/asset_injector
+chown -R apache:apache web/sites/default/files
 
 # Ensure Drupal's assets directory is writable.
-mkdir -p web/sites/default/assets
-chown -R apache:apache web/sites/default/assets
-chmod -R u+rwX web/sites/default/assets
+# mkdir -p web/sites/default/assets
+# chown -R apache:apache web/sites/default/assets
+# chmod -R u+rwX web/sites/default/assets
 
 # Disable JavaScript aggregation on every ECS deployment.
 echo "Disabling JavaScript aggregation"
