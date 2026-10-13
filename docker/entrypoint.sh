@@ -36,6 +36,7 @@ else
 fi
 
 # Run database updates.
+
 su -s /bin/sh apache -c "cd /var/www/drupal/web && drush updb -y" || exit 1
 
 # Enable required modules.

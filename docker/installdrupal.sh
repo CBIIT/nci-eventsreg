@@ -5,7 +5,7 @@ if [ -f "$FILE" ]; then
 else
     touch installed.txt
 
-    cp $code_path/docker/composer.lock ./
+    cp $code_path/docker/composer.json ./
     cp $code_path/docker/composer.lock ./
     cp -r $code_path/docker/web ./
     cp $code_path/docker/web/.htaccess ./web
