@@ -23,7 +23,7 @@ drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage
 # Prepare writable directories before database updates.
 mkdir -p web/sites/default/files/asset_injector web/sites/default/private
 chown -R apache:apache web/sites/default
-
+drush pmu webform_jqueryui_buttons -y
 # Only adjust Honeypot when its recorded schema is exactly 8100.
 # WARNING: This skips historical updates 8101-8104; verify those migrations
 # are unnecessary or have already been applied before deploying.
