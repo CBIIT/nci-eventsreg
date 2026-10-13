@@ -20,20 +20,27 @@ drush php:eval '$config = \Drupal::configFactory()->getEditable("core.extension"
 # Set image and file field storage to private.
 drush php:eval 'foreach (\Drupal::entityTypeManager()->getStorage("field_storage_config")->loadMultiple() as $f) { if (in_array($f->getType(), ["image", "file"], TRUE)) { $f->setSetting("uri_scheme", "private"); $f->save(); echo $f->id() . " => private\n"; } }'
 
-# Run database updates.
-su -s /bin/sh apache -c "cd /var/www/drupal/web && drush updb -y"
+# Prepare writable directories before database updates.
+mkdir -p web/sites/default/files/asset_injector web/sites/default/private
+chown -R apache:apache web/sites/default
 
-drush pmu webform_jqueryui_buttons -y
+# Only adjust Honeypot when its recorded schema is exactly 8100.
+# WARNING: This skips historical updates 8101-8104; verify those migrations
+# are unnecessary or have already been applied before deploying.
+HONEYPOT_SCHEMA=$(drush php:eval 'echo \Drupal::keyValue("system.schema")->get("honeypot", 0);') || exit 1
+if [ "$HONEYPOT_SCHEMA" = "8100" ]; then
+  echo "Advancing legacy Honeypot schema 8100 to 8104"
+  drush php:eval '\Drupal::keyValue("system.schema")->set("honeypot", 8104);' || exit 1
+else
+  echo "Honeypot schema $HONEYPOT_SCHEMA: no change"
+fi
+
+# Run database updates.
+su -s /bin/sh apache -c "cd /var/www/drupal/web && drush updb -y" || exit 1
+
 # Enable required modules.
 drush en legacy_files -y
 drush en s3fs -y
-
-# Ensure the public Asset Injector directory is writable.
-# Asset Injector's installation checks still reference public://.
-mkdir -p web/sites/default/files/asset_injector
-mkdir -p web/sites/default/private
-chown -R apache:apache web/sites/default/files/asset_injector
-chown -R apache:apache web/sites/default
 
 # Ensure Drupal's assets directory is writable.
 # mkdir -p web/sites/default/assets
