@@ -1,4 +1,4 @@
-name: Build and Push Docker Image (Dev-Prod)
+name: Build and Push to ECR
 on:
   workflow_dispatch:
     inputs:
