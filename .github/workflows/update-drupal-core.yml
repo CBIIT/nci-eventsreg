@@ -1,3 +1,4 @@
+
 name: Update Drupal Core
 
 on:
@@ -8,9 +9,13 @@ permissions:
 
 jobs:
   update:
+    if: github.ref == 'refs/heads/shaun-test'
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: shaun-test
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -34,8 +39,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add docker/composer.json docker/composer.lock
+
           if ! git diff --cached --quiet; then
             git commit -m "Update Drupal core to 11.4.11"
-            git push
+            git push origin HEAD:shaun-test
           fi
