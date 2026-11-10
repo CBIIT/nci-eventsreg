@@ -9,7 +9,7 @@ COPY httpd.conf /etc/apache2
 COPY entrypoint.sh /usr/bin
 COPY ./ /tmp/github/docker
 COPY installdrupal.sh /usr/bin
-
+COPY ldap.conf /etc/openldap
 # Install AWS SDK
 RUN composer require aws/aws-sdk-php
 
