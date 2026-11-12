@@ -1,5 +1,5 @@
 #!/bin/bash
-# Bash wait -n supervises Apache, PHP-FPM and Postfix without systemd.
+# Bash wait -n supervises Apache and PHP-FPM without systemd.
 # Keep the original Drupal initialization sequence and its error handling.
 set -u
 if [[ "${1:-}" != httpd ]]; then
@@ -105,7 +105,8 @@ mkdir -p /run/httpd /run/php-fpm
 # Fedora's container build may omit runtime spool directories.
 # Create the top-level queue before postfix can chdir into it; its check
 # command then creates/checks the required queue subdirectories.
-mkdir -p /var/spool/postfix /var/lib/postfix
+mkdir -p /var/spool/postfix
+install -d -o postfix -g postfix -m 0700 /var/lib/postfix
 postfix check || exit 1
 php-fpm --test || exit 1
 httpd -t || exit 1
@@ -117,16 +118,31 @@ cleanup() {
         kill -TERM "${pids[@]}" 2>/dev/null || true
         wait "${pids[@]}" 2>/dev/null || true
     fi
+    postfix stop 2>/dev/null || true
 }
-trap 'cleanup; exit 0' TERM INT
+trap 'echo "Received SIGTERM; stopping web services and Postfix" >&2; cleanup; exit 0' TERM
+trap 'echo "Received SIGINT; stopping web services and Postfix" >&2; cleanup; exit 0' INT
 
-postfix start-fg &
-pids+=("$!")
+# Use Postfix's normal daemon startup, as the original application did.
+# Do not treat the lifetime of its start wrapper as the web service lifetime.
+postfix start || exit 1
 php-fpm --nodaemonize &
-pids+=("$!")
+fpm_pid=$!
+pids+=("$fpm_pid")
 "$@" &
-pids+=("$!")
+httpd_pid=$!
+pids+=("$httpd_pid")
 status=0
-wait -n "${pids[@]}" || status=$?
+exited_pid=
+wait -n -p exited_pid "${pids[@]}" || status=$?
+if [[ "${exited_pid:-}" == "$fpm_pid" ]]; then
+    echo "PHP-FPM exited (pid=$fpm_pid, status=$status); stopping container" >&2
+elif [[ "${exited_pid:-}" == "$httpd_pid" ]]; then
+    echo "Apache exited (pid=$httpd_pid, status=$status); stopping container" >&2
+else
+    echo "Web service wait ended (pid=${exited_pid:-unknown}, status=$status)" >&2
+fi
 cleanup
+# An unrequested web-service exit is unhealthy, even with status 0.
+if [[ "$status" == 0 ]]; then status=1; fi
 exit "$status"

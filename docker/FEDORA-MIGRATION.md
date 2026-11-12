@@ -58,3 +58,9 @@ Validated shell syntax, JSON parsing, ZIP structure, expected configuration path
 ## Startup correction
 
 The first Fargate run showed Postfix exiting because /var/spool/postfix was absent. The supervisor then intentionally terminated Apache/PHP-FPM. The entrypoint now creates the spool/data roots and runs postfix check before starting services. php-soap is also installed because Fedora's PHP-FPM pool config sets soap.wsdl_cache_dir; the earlier image did not load that extension. These corrections passed shell/static checks but require a new build and Fargate startup test.
+
+## Follow-up startup correction
+
+Postfix now uses normal daemon startup, matching the original application, and is stopped by the entrypoint cleanup. Only Apache/PHP-FPM are monitored with wait -n; the Postfix startup wrapper can no longer end the web-service wait. /var/lib/postfix is explicitly owned by postfix. Exit logs distinguish an external SIGTERM from a PHP-FPM/Apache process exit. Postfix startup failure still aborts startup, but later mail-daemon failures need separate monitoring.
+
+The latest supplied logs also identify missing Drupal extensions: theme events and module event_task_hub. Neither info.yml file exists in the uploaded Docker directory. Restore their actual source from the project/working image; this conversion does not remove their database registration or invent replacement code.
