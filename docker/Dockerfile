@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 
 # PHP modules and httpd-tools are supplied by the converted Fedora base.
 # su is needed by the existing Drupal initialization commands.
-RUN dnf install -y --setopt=install_weak_deps=False util-linux php-soap \
+RUN dnf install -y --setopt=install_weak_deps=False util-linux php-soap unzip \
     && dnf clean all \
     && rm -rf /var/cache/dnf \
     && php -r 'if (PHP_MAJOR_VERSION !== 8 || PHP_MINOR_VERSION !== 5 || LIBXML_VERSION < 21504) { fwrite(STDERR, "Expected Fedora base with PHP 8.5 and libxml2 >= 2.15.4\n"); exit(1); }'
@@ -25,6 +25,20 @@ WORKDIR ${drupal_root}
 RUN /usr/bin/installdrupal.sh \
     && composer check-platform-reqs \
     && php-fpm --test \
+    && httpd -t
+
+# Install the complete PDF.js distribution after Drupal setup.
+ARG PDFJS_VERSION=6.3.289
+RUN mkdir -p "${drupal_root}/web/libraries/pdf.js" \
+    && curl --fail --location --retry 3 \
+       "https://github.com/mozilla/pdf.js/releases/download/v${PDFJS_VERSION}/pdfjs-${PDFJS_VERSION}-dist.zip" \
+       -o /tmp/pdfjs.zip \
+    && unzip -q /tmp/pdfjs.zip -d "${drupal_root}/web/libraries/pdf.js" \
+    && rm /tmp/pdfjs.zip \
+    && chmod -R a+rX "${drupal_root}/web/libraries/pdf.js" \
+    && test -s "${drupal_root}/web/libraries/pdf.js/web/viewer.html" \
+    && test -s "${drupal_root}/web/libraries/pdf.js/build/pdf.mjs" \
+    && printf '%s\n' 'AddType text/javascript .mjs' > /etc/httpd/conf.d/20-pdfjs.conf \
     && httpd -t
 
 EXPOSE 80
