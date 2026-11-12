@@ -1,9 +1,14 @@
-#!/bin/sh
+#!/bin/bash
+# Bash wait -n supervises Apache, PHP-FPM and Postfix without systemd.
+# Keep the original Drupal initialization sequence and its error handling.
+set -u
+if [[ "${1:-}" != httpd ]]; then
+    exec "$@"
+fi
 
-cd /var/www/drupal || exit 1
+cd "${drupal_root:-/var/www/drupal}" || exit 1
 
-# Start Postfix.
-postfix start
+# Postfix starts with the supervised runtime processes after initialization.
 
 # Enable the Stable9 theme.
 echo "Installing stable9"
@@ -93,6 +98,30 @@ find web/sites/default/assets/asset_injector/css -name '*.css' 2>/dev/null | wc 
 echo "Asset Injector JS files:"
 find web/sites/default/assets/asset_injector/js -name '*.js' 2>/dev/null | wc -l
 
-# Start Apache.
-echo "Starting Apache"
-exec httpd -D FOREGROUND
+# Do not invoke the base entrypoint here: its drush cr would delete the
+# Asset Injector files that were just regenerated above.
+echo "Starting PHP-FPM, Postfix and Apache"
+mkdir -p /run/httpd /run/php-fpm
+php-fpm --test || exit 1
+httpd -t || exit 1
+
+pids=()
+cleanup() {
+    trap - TERM INT
+    if ((${#pids[@]})); then
+        kill -TERM "${pids[@]}" 2>/dev/null || true
+        wait "${pids[@]}" 2>/dev/null || true
+    fi
+}
+trap 'cleanup; exit 0' TERM INT
+
+postfix start-fg &
+pids+=("$!")
+php-fpm --nodaemonize &
+pids+=("$!")
+"$@" &
+pids+=("$!")
+status=0
+wait -n "${pids[@]}" || status=$?
+cleanup
+exit "$status"

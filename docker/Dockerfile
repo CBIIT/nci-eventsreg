@@ -1,32 +1,35 @@
-FROM base:latest
+# Override with your Fedora drupal-docker ECR image/tag in CI.
+ARG BASE_IMAGE=base:latest
+FROM ${BASE_IMAGE}
 
-# Add required PHP modules and Apache utils
-RUN apk add apache2-utils libbz2 mariadb-connector-c php85-ctype php85-exif php85-fileinfo php85-posix php85-xmlreader php85-xmlwriter
+# PHP modules and httpd-tools are supplied by the converted Fedora base.
+# su is needed by the existing Drupal initialization commands.
+RUN dnf install -y --setopt=install_weak_deps=False util-linux \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf \
+    && php -r 'if (PHP_MAJOR_VERSION !== 8 || PHP_MINOR_VERSION !== 5 || LIBXML_VERSION < 21504) { fwrite(STDERR, "Expected Fedora base with PHP 8.5 and libxml2 >= 2.15.4\n"); exit(1); }'
 
-# Copy configs and scripts
-COPY 000-default.conf /etc/apache2/conf.d
-COPY httpd.conf /etc/apache2
-COPY entrypoint.sh /usr/bin
+# Preserve Fedora's main httpd config and its packaged PHP-FPM handler.
+COPY 000-default.conf /etc/httpd/conf.d/000-default.conf
+COPY httpd.conf /etc/httpd/conf.d/10-eventsreg.conf
+COPY memory.ini 00_filesize.ini /etc/php.d/
+COPY entrypoint.sh /usr/bin/entrypoint.sh
 COPY ./ /tmp/github/docker
-COPY installdrupal.sh /usr/bin
-COPY ldap.conf /etc/openldap
-# Install AWS SDK
-RUN composer require aws/aws-sdk-php
+COPY installdrupal.sh /usr/bin/installdrupal.sh
+RUN chmod +x /usr/bin/entrypoint.sh /usr/bin/installdrupal.sh
 
-# Make entrypoint executable
-RUN chmod +x /usr/bin/entrypoint.sh
+WORKDIR ${drupal_root}
+# aws/aws-sdk-php already belongs to this project's composer.json/lock.
+# Install that lockfile through the existing setup script.
+RUN /usr/bin/installdrupal.sh \
+    && composer check-platform-reqs \
+    && php-fpm --test \
+    && httpd -t
 
-# Drupal setup
-WORKDIR $drupal_root
 EXPOSE 80
-RUN /usr/bin/installdrupal.sh
-
-# Start postfix (if required by your app, otherwise this line can be removed)
-RUN postfix start
-
-# Healthcheck
+# Retain the existing healthcheck behavior; this checks transport, not HTTP status.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=4 \
   CMD curl -sS -o /dev/null http://127.0.0.1:80/ || exit 1
 
-# Entrypoint
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+CMD ["httpd", "-D", "FOREGROUND"]
