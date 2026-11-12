@@ -15,6 +15,7 @@ COPY httpd.conf /etc/httpd/conf.d/10-eventsreg.conf
 COPY memory.ini 00_filesize.ini /etc/php.d/
 COPY entrypoint.sh /usr/bin/entrypoint.sh
 COPY ./ /tmp/github/docker
+COPY ldap.conf /etc/openldap
 COPY installdrupal.sh /usr/bin/installdrupal.sh
 RUN chmod +x /usr/bin/entrypoint.sh /usr/bin/installdrupal.sh
 
