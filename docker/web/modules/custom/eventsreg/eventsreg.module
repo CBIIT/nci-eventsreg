@@ -9,6 +9,20 @@ use Drupal\webform\WebformSubmissionInterface;
 use Drupal\webform\Plugin\WebformElement\WebformElementManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Implements hook_file_url_alter().
+ */
+function eventsreg_file_url_alter(&$uri) {
+  // Send public PDFs directly through the existing legacy download route.
+  if (
+    str_starts_with($uri, 'public://') &&
+    strtolower(pathinfo($uri, PATHINFO_EXTENSION)) === 'pdf'
+  ) {
+    $path = substr($uri, strlen('public://'));
+    $uri = base_path() . 'system/files/legacy_public/' . $path;
+  }
+}
+
 function eventsreg_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
   // disable captcha on search filter //
   if (isset($form['#id']) && $form['#id'] === 'views-exposed-form-testing-homepage-block-1') {
