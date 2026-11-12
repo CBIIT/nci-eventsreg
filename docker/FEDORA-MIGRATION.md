@@ -54,3 +54,7 @@ Run in the nonproduction ECS environment with its usual database/S3/secret envir
 ## Validation performed here
 
 Validated shell syntax, JSON parsing, ZIP structure, expected configuration paths and that application files/manifests were not changed. Docker/Podman/PHP/Composer were unavailable in this workspace, so an actual image build, configuration validation against Fedora binaries, dependency resolution and database/LDAP/mail integration testing were not performed.
+
+## Startup correction
+
+The first Fargate run showed Postfix exiting because /var/spool/postfix was absent. The supervisor then intentionally terminated Apache/PHP-FPM. The entrypoint now creates the spool/data roots and runs postfix check before starting services. php-soap is also installed because Fedora's PHP-FPM pool config sets soap.wsdl_cache_dir; the earlier image did not load that extension. These corrections passed shell/static checks but require a new build and Fargate startup test.

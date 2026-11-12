@@ -102,6 +102,11 @@ find web/sites/default/assets/asset_injector/js -name '*.js' 2>/dev/null | wc -l
 # Asset Injector files that were just regenerated above.
 echo "Starting PHP-FPM, Postfix and Apache"
 mkdir -p /run/httpd /run/php-fpm
+# Fedora's container build may omit runtime spool directories.
+# Create the top-level queue before postfix can chdir into it; its check
+# command then creates/checks the required queue subdirectories.
+mkdir -p /var/spool/postfix /var/lib/postfix
+postfix check || exit 1
 php-fpm --test || exit 1
 httpd -t || exit 1
 

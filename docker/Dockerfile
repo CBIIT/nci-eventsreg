@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 
 # PHP modules and httpd-tools are supplied by the converted Fedora base.
 # su is needed by the existing Drupal initialization commands.
-RUN dnf install -y --setopt=install_weak_deps=False util-linux \
+RUN dnf install -y --setopt=install_weak_deps=False util-linux php-soap \
     && dnf clean all \
     && rm -rf /var/cache/dnf \
     && php -r 'if (PHP_MAJOR_VERSION !== 8 || PHP_MINOR_VERSION !== 5 || LIBXML_VERSION < 21504) { fwrite(STDERR, "Expected Fedora base with PHP 8.5 and libxml2 >= 2.15.4\n"); exit(1); }'
