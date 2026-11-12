@@ -66,7 +66,6 @@
         "drupal/rules": "^4.0",
         "drupal/s3fs": "^3.11",
         "drupal/scheduler": "^1.6",
-        "drupal/select2": "^2.0",
         "drupal/seven": "^2.0@beta",
         "drupal/symfony_mailer": "^1.6",
         "drupal/symfony_mailer_queue": "^1.2",
