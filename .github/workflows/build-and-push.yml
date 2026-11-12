@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - fedora
+      - dev
 
 permissions:
   id-token: write
@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: cbiit/drupal-docker
-          ref: fedora
+          ref: dev
           path: ./drupal-docker
 
       - name: Set up Docker Buildx
