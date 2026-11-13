@@ -1,0 +1,20 @@
+{
+  "field_task_web_banner": "Web Banner",
+  "field_task_vami_contact_email": "VAMI Contact Email",
+  "field_task_overview": "Overview",
+  "field_task_agenda": "Agenda",
+  "field_task_omb_approval": "OMB Clearance Approval",
+  "field_task_registration": "Registration",
+  "field_task_registration_confirm": "Registration Confirmation",
+  "field_task_calendar_invite": "Calendar Invite",
+  "field_task_abstract": "Abstract Submission",
+  "field_task_abstract_confir": "Abstract Submission Confirmation",
+  "field_task_speaker_bios": "Speaker Bios",
+  "field_task_speaker_bio_web_form": "Speaker Bio Web Form",
+  "field_task_venue": "Venue",
+  "field_task_hotel_travel": "Hotel & Travel",
+  "field_task_resources": "Resources",
+  "field_task_custom_page": "Custom Page",
+  "field_task_poster_submission": "Poster Submission",
+  "field_task_poster_sub_confirm": "Poster Submission Confirmation"
+}

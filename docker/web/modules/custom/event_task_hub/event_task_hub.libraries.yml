@@ -1,0 +1,9 @@
+tasks:
+  js:
+    js/progress.js: {}
+  css:
+    theme:
+      css/tasks.css: {}
+  dependencies:
+    - core/drupal
+    - core/once

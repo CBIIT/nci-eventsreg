@@ -1,0 +1,9 @@
+<section class="eth-task" id="{{ anchor }}" aria-labelledby="{{ anchor }}-title">
+  <div class="eth-task-heading">
+    <h3 id="{{ anchor }}-title">{{ label }}</h3>
+    <span class="eth-pill" data-status="{{ status_key }}">{{ status }}</span>
+  </div>
+  {{ help }}
+  {% if task_link %}<div class="eth-task-link">{{ task_link }}</div>{% endif %}
+  {{ discussion }}
+</section>

@@ -1,0 +1,309 @@
+{
+  "field_task_web_banner": {
+    "label": "Web Banner",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_omb_approval": {
+    "label": "OMB  Clearance Approval",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "apply_for_approval": "Apply for Approval",
+        "approval_pending": "Approval Pending",
+        "approved": "Approved"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_overview": {
+    "label": "Overview Page",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_agenda": {
+    "label": "Agenda Page",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_registration": {
+    "label": "Registration Form",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_registration_confirm": {
+    "label": "Registration Confirmation Page & Email(s)",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_calendar_invite": {
+    "label": "Calendar Invite",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_speaker_bios": {
+    "label": "Speaker Bios",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_speaker_bio_web_form": {
+    "label": "Speaker Bio Web Form ",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_vami_contact_email": {
+    "label": "VAMI Host Email Address",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "email_needed": "Content Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_venue": {
+    "label": "Venue",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_hotel_travel": {
+    "label": "Hotel & Travel",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_abstract": {
+    "label": "Abstract Submission Form",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_abstract_confir": {
+    "label": "Abstract Submission Confirmation Page & Email",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_poster_submission": {
+    "label": "Poster Submission Form",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_poster_sub_confirm": {
+    "label": "Poster Submission Confirmation Page & Email",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "testing_required": "Testing Required",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_resources": {
+    "label": "Resources",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_custom_page": {
+    "label": "Custom Page",
+    "type": "list_string",
+    "storage_settings": {
+      "allowed_values": {
+        "content_needed": "Content Needed",
+        "in_development": "In Development",
+        "approval_needed": "Approval Needed",
+        "completed": "Completed"
+      },
+      "allowed_values_function": ""
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_target_launch_date": {
+    "label": "Target Launch Date:",
+    "type": "datetime",
+    "storage_settings": {
+      "datetime_type": "date"
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_actual_launch_date": {
+    "label": "Actual Launch Date",
+    "type": "datetime",
+    "storage_settings": {
+      "datetime_type": "date"
+    },
+    "settings": {},
+    "cardinality": 1
+  },
+  "field_task_notify_emails": {
+    "label": "Notify Emails",
+    "type": "email",
+    "storage_settings": {},
+    "settings": {},
+    "cardinality": -1
+  },
+  "field_task_speaker_bio_link": {
+    "label": "Speaker Bio Web Form Link",
+    "type": "link",
+    "storage_settings": {},
+    "settings": {
+      "title": 1,
+      "link_type": 17
+    },
+    "cardinality": 1
+  }
+}

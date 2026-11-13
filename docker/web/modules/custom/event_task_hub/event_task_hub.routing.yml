@@ -1,0 +1,24 @@
+event_task_hub.post:
+  path: '/node/{node}/task-comment/{task}'
+  defaults:
+    _controller: '\Drupal\event_task_hub\Controller\DiscussionController::post'
+    _title: 'Add a task comment'
+  requirements:
+    _custom_access: '\Drupal\event_task_hub\Controller\DiscussionController::postAccess'
+    task: 'field_task_[a-z_]+'
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+event_task_hub.update:
+  path: '/node/{node}/event-update'
+  defaults:
+    _controller: '\Drupal\event_task_hub\Controller\DiscussionController::update'
+    _title: 'Post an Update'
+  requirements:
+    _custom_access: '\Drupal\event_task_hub\Controller\DiscussionController::updateAccess'
+  options:
+    parameters:
+      node:
+        type: entity:node

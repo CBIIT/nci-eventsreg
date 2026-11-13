@@ -1,0 +1,26 @@
+{
+  "field_task_overview": [
+    "Provide a brief meeting description, including its purpose, intended audience, coordinators or contacts, and any other key details.",
+    "For help preparing your Overview, please use our [Meeting Overview Template](https://events.cancer.gov/sites/default/files/assets/templates/Overview_Page_Template.docx).",
+    "[View Demo Site's Overview page](https://events.cancer.gov/demo/event)"
+  ],
+  "field_task_agenda": "[Learn more about the two types of agenda formats we offer](https://events.cancer.gov/demo/event/agenda).",
+  "field_task_web_banner": "Size must be 1170 pixels width and no taller than 350 pixels in height, file format must be either .png or .jpg and file size should not exceed 1 MB",
+  "field_task_vami_contact_email": [
+    "For events held at NIH or Shady Grove, provide the email address of the federal employee who will attend the meeting on-site and enter non-citizen information into the VAMI application.",
+    "[Learn more about conference host VAMI responsibilities](https://events.cancer.gov/nci/building/vami)"
+  ],
+  "field_task_omb_approval": [
+    "[Common Form Application](https://events.cancer.gov/common-form)",
+    "[Abstract, Speaker & Poster Application](https://events.cancer.gov/common-form-abstracts)",
+    "[Learn more about OMB Clearance](https://events.cancer.gov/nci/building/omb)"
+  ],
+  "field_task_registration": "Review the text and fields, submit a test registration, and provide a deadline for registrants. [Learn more about Registration Forms](https://events.cancer.gov/demo/event/registration).",
+  "field_task_registration_confirm": "Use our [Confirmation Web Page and Email Template](https://events.cancer.gov/sites/default/files/assets/templates/Registration_Confirmation_Templates.docx). To test, submit a test registration and provide any additional edits or feedback.",
+  "field_task_calendar_invite": "Request an .ics Calendar Invite from the [AV Conference Support](mailto:NCICRHelp@mail.nih.gov) and upload it below.",
+  "field_task_abstract": "Review text and fields, submit a test submission and provide a deadline for submissions.",
+  "field_task_abstract_confir": "Submit a test submission to see this page, provide any custom edits to the text.",
+  "field_task_speaker_bio_web_form": "Provide a contact email and submission deadline for speakers to send their headshots. The designated contact will be responsible for uploading the headshots to the web form.",
+  "field_task_poster_submission": "Review text and fields, submit a test submission and provide a deadline for submissions.",
+  "field_task_poster_sub_confirm": "Submit a test submission to see this page, provide any custom edits to the text."
+}

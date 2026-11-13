@@ -1,0 +1,7 @@
+<article class="eth-comment" id="{{ anchor_prefix }}comment-{{ comment_id }}">
+  <header><strong>{{ author }}</strong> <span>{{ date }}</span></header>
+  {% if task_label %}<h3 class="eth-comment-task">{{ task_label }}</h3>{% endif %}
+  <div class="eth-message">{{ message }}</div>
+  <div class="eth-comment-files">{{ files }}</div>
+  {% if operations %}<nav aria-label="{{ 'Comment actions'|t }}">{{ operations }}</nav>{% endif %}
+</article>

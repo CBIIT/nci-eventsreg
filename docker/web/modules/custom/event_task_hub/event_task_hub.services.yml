@@ -1,0 +1,10 @@
+services:
+  event_task_hub.setup:
+    class: Drupal\event_task_hub\Setup
+  event_task_hub.dashboard:
+    class: Drupal\event_task_hub\Dashboard
+  event_task_hub.uninstall_validator:
+    class: Drupal\event_task_hub\UninstallValidator
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: module_install.uninstall_validator }

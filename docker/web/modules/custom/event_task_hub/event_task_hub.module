@@ -1,0 +1,260 @@
+<?php
+
+use Drupal\comment\CommentInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\event_task_hub\Setup;
+use Drupal\node\NodeInterface;
+
+/** Implements hook_theme(). */
+function event_task_hub_theme($existing, $type, $theme, $path): array {
+  return [
+    'event_task_hub_post' => ['variables' => ['form' => []]],
+    'event_task_hub_history' => ['variables' => ['filter' => [], 'items' => [], 'pager' => [], 'start' => 0, 'end' => 0, 'total' => 0]],
+    'event_task_hub_dashboard' => ['variables' => ['tasks' => [], 'counts' => [], 'total' => 0, 'done' => 0, 'percent' => 0, 'launch' => []]],
+    'event_task_hub_task' => ['variables' => ['label' => '', 'status' => '', 'status_key' => '', 'anchor' => '', 'help' => [], 'task_link' => [], 'discussion' => []]],
+    'event_task_hub_comment' => ['variables' => ['comment_id' => 0, 'anchor_prefix' => '', 'task_label' => '', 'author' => '', 'date' => '', 'message' => '', 'files' => [], 'operations' => []]],
+  ];
+}
+
+/** Implements hook_node_view_alter(). */
+function event_task_hub_node_view_alter(array &$build, EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display): void {
+  if (!$entity instanceof NodeInterface || $entity->bundle() !== Setup::BUNDLE
+      || !in_array($build['#view_mode'] ?? '', ['full', 'default'], TRUE)) {
+    return;
+  }
+  foreach (array_keys(Setup::tasks()) as $task) {
+    unset($build[$task], $build[Setup::discussionField($task)]);
+  }
+  foreach (['field_target_launch_date', 'field_actual_launch_date', 'field_task_speaker_bio_link',
+    'field_task_notify_emails', 'field_post_an_update', 'field_task_total_submissions'] as $name) {
+    unset($build[$name]);
+  }
+  $build['event_tasks'] = \Drupal::service('event_task_hub.dashboard')->build($entity);
+  $build['event_tasks']['#weight'] = 0;
+  $build['#cache']['max-age'] = 0;
+  $build['#cache']['contexts'][] = 'user';
+  $build['#cache']['contexts'][] = 'url.query_args';
+}
+
+/** Implements hook_node_load(): defaults for fields added to existing nodes. */
+function event_task_hub_node_load(array $nodes): void {
+  foreach ($nodes as $node) {
+    event_task_hub_initialize_discussions($node);
+  }
+}
+
+/** Implements hook_node_presave(). */
+function event_task_hub_node_presave(NodeInterface $node): void {
+  event_task_hub_initialize_discussions($node);
+}
+
+function event_task_hub_initialize_discussions(NodeInterface $node): void {
+  if ($node->bundle() !== Setup::BUNDLE) {
+    return;
+  }
+  foreach (array_keys(Setup::tasks()) as $task) {
+    $field = Setup::discussionField($task);
+    if ($node->hasField($field) && $node->get($field)->isEmpty()) {
+      $node->set($field, ['status' => 2]);
+    }
+  }
+}
+
+/** Implements hook_entity_field_access(): also protects core comment routes. */
+function event_task_hub_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, ?FieldItemListInterface $items = NULL) {
+  if ($field_definition->getTargetEntityTypeId() !== 'node'
+      || $field_definition->getType() !== 'comment'
+      || $field_definition->getSetting('comment_type') !== Setup::COMMENT_TYPE) {
+    return AccessResult::neutral();
+  }
+  $node = $items?->getEntity();
+  $denied = !$account->isAuthenticated() || !$account->hasPermission('access event task discussions');
+  if ($node instanceof NodeInterface && !$node->isNew()) {
+    $task = event_task_hub_task_for_field($field_definition->getName());
+    $denied = $denied || !$node->access('view', $account)
+      || !$task || !$node->hasField($task) || $node->get($task)->isEmpty()
+      || !$node->get($task)->access('view', $account);
+  }
+  $result = AccessResult::forbiddenIf($denied)->cachePerUser();
+  return $node ? $result->addCacheableDependency($node) : $result;
+}
+
+function event_task_hub_task_for_field(string $field): ?string {
+  foreach (array_keys(Setup::tasks()) as $task) {
+    if (Setup::discussionField($task) === $field) {
+      return $task;
+    }
+  }
+  return NULL;
+}
+
+/** Implements hook_comment_access(): protects standalone comments and files. */
+function event_task_hub_comment_access(CommentInterface $comment, $operation, AccountInterface $account) {
+  if ($comment->bundle() !== Setup::COMMENT_TYPE) {
+    return AccessResult::neutral();
+  }
+  $node = $comment->getCommentedEntity();
+  $task = event_task_hub_task_for_field($comment->getFieldName());
+  $denied = !$account->isAuthenticated() || !$account->hasPermission('access event task discussions')
+    || !($node instanceof NodeInterface) || $node->bundle() !== Setup::BUNDLE || !$node->access('view', $account)
+    || !$task || !$node->hasField($task) || $node->get($task)->isEmpty() || !$node->get($task)->access('view', $account);
+  $result = AccessResult::forbiddenIf($denied)->cachePerUser()->addCacheableDependency($comment);
+  return $node ? $result->addCacheableDependency($node) : $result;
+}
+
+/** Implements hook_form_alter(). */
+function event_task_hub_form_alter(array &$form, FormStateInterface $form_state, $form_id): void {
+  $object = $form_state->getFormObject();
+  if (!$object instanceof \Drupal\comment\CommentForm || $object->getEntity()->bundle() !== Setup::COMMENT_TYPE) {
+    return;
+  }
+  $comment = $object->getEntity();
+  if (\Drupal::routeMatch()->getRouteName() === 'event_task_hub.post') {
+    $form['#action'] = \Drupal::request()->getRequestUri();
+  }
+  $form['actions']['submit']['#submit'][] = 'event_task_hub_comment_redirect';
+  if (!\Drupal\Core\StreamWrapper\PrivateStream::basePath()) {
+    $form['field_eth_files']['#access'] = FALSE;
+    $form['private_storage_notice'] = ['#plain_text' => t('Attachments are unavailable until private file storage is configured.')];
+  }
+}
+
+/** Redirects to the newest page of the correct task after comment actions. */
+function event_task_hub_comment_redirect(array &$form, FormStateInterface $form_state): void {
+  $comment = $form_state->getFormObject()->getEntity();
+  $node = $comment->getCommentedEntity();
+  $task = event_task_hub_task_for_field($comment->getFieldName());
+  if ($node && $task) {
+    $form_state->setRedirect('entity.node.canonical', ['node' => $node->id()], ['fragment' => 'eth-' . $task]);
+  }
+}
+
+/** Implements hook_comment_presave(). */
+function event_task_hub_comment_presave(CommentInterface $comment): void {
+  if ($comment->bundle() === Setup::COMMENT_TYPE && $comment->isNew()) {
+    $comment->setSubject(\Drupal\Component\Utility\Unicode::truncate((string) $comment->get('field_eth_message')->value, 80, TRUE, TRUE));
+  }
+}
+
+/** Implements hook_comment_insert(). */
+function event_task_hub_comment_insert(CommentInterface $comment): void {
+  if ($comment->bundle() === Setup::COMMENT_TYPE && $comment->isPublished()) {
+    event_task_hub_notify($comment);
+  }
+}
+
+/** Implements hook_comment_update(). */
+function event_task_hub_comment_update(CommentInterface $comment): void {
+  if ($comment->bundle() === Setup::COMMENT_TYPE && $comment->isPublished()) {
+    $original = method_exists($comment, 'getOriginal') ? $comment->getOriginal() : ($comment->original ?? NULL);
+    if ($original && !$original->isPublished()) {
+      event_task_hub_notify($comment);
+    }
+  }
+}
+
+/** Notifies each configured recipient separately; never attaches private files. */
+function event_task_hub_notify(CommentInterface $comment): void {
+  $node = $comment->getCommentedEntity();
+  $task = event_task_hub_task_for_field($comment->getFieldName());
+  if (!$node instanceof NodeInterface || !$task || !$node->hasField('field_task_notify_emails')) {
+    return;
+  }
+  $sent = \Drupal::keyValue('event_task_hub.notification_sent');
+  $recipients = [];
+  foreach ($node->get('field_task_notify_emails') as $item) {
+    $email = trim((string) $item->value);
+    if (\Drupal::service('email.validator')->isValid($email)) {
+      $recipients[strtolower($email)] = $email;
+    }
+  }
+  foreach ($recipients as $email) {
+    $key = $comment->id() . ':' . hash('sha256', strtolower($email));
+    if ($sent->get($key)) {
+      continue;
+    }
+    try {
+      $result = \Drupal::service('plugin.manager.mail')->mail('event_task_hub', 'new_comment', $email,
+        $node->language()->getId(), [
+          'title' => $node->label(), 'task' => $node->getFieldDefinition($task)->getLabel(),
+          'author' => $comment->getAuthorName(), 'message' => (string) $comment->get('field_eth_message')->value,
+          'url' => $node->toUrl('canonical', ['absolute' => TRUE, 'fragment' => 'eth-' . $task])->toString(),
+          'files' => $comment->get('field_eth_files')->count(),
+        ]);
+      if (!empty($result['result'])) {
+        $sent->set($key, TRUE);
+      }
+      else {
+        \Drupal::logger('event_task_hub')->error('Notification could not be sent for task comment @id.', ['@id' => $comment->id()]);
+      }
+    }
+    catch (\Throwable $exception) {
+      \Drupal::logger('event_task_hub')->error('Task comment @id was saved, but its notification failed: @error', ['@id' => $comment->id(), '@error' => $exception->getMessage()]);
+    }
+  }
+}
+
+/** Implements hook_mail(). */
+function event_task_hub_mail($key, &$message, $params): void {
+  if ($key === 'new_comment') {
+    $message['subject'] = str_replace(["\r", "\n"], ' ', $params['title'] . ' — ' . $params['task']);
+    $message['body'][] = $params['author'] . " posted a task comment:\n\n" . $params['message'];
+    if ($params['files']) {
+      $message['body'][] = t('@count attachment(s). Sign in to view them on the event page.', ['@count' => $params['files']]);
+    }
+    $message['body'][] = $params['url'];
+  }
+}
+
+/** Implements hook_file_download(): denies bypassing event/comment access. */
+function event_task_hub_file_download($uri) {
+  if (!str_starts_with($uri, 'private://event_task_hub/')) {
+    return NULL;
+  }
+  $account = \Drupal::currentUser();
+  if (!$account->isAuthenticated() || !$account->hasPermission('access event task discussions')) {
+    return -1;
+  }
+  $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+  $file = reset($files);
+  if (!$file) {
+    return -1;
+  }
+  if (!$file->isPermanent() && (string) $file->getOwnerId() === (string) $account->id()) {
+    return ['Content-Type' => $file->getMimeType()];
+  }
+  $storage = \Drupal::entityTypeManager()->getStorage('comment');
+  $ids = $storage->getQuery()->accessCheck(FALSE)
+    ->condition('comment_type', Setup::COMMENT_TYPE)
+    ->condition('field_eth_files.target_id', $file->id())->execute();
+  foreach ($storage->loadMultiple($ids) as $comment) {
+    if ($comment->access('view', $account) && $comment->get('field_eth_files')->access('view', $account)) {
+      return ['Content-Type' => $file->getMimeType()];
+    }
+  }
+  return -1;
+}
+
+/** Implements hook_entity_type_alter(). */
+function event_task_hub_entity_type_alter(array &$entity_types): void {
+  if (isset($entity_types['comment'])) {
+    $entity_types['comment']->setFormClass('event_task_update', \Drupal\event_task_hub\Form\EventUpdateForm::class);
+  }
+}
+
+/** Implements hook_node_links_alter(). */
+function event_task_hub_node_links_alter(array &$links, \Drupal\node\NodeInterface $node, array &$context): void {
+  if ($node->bundle() !== 'manage_my') {
+    return;
+  }
+  foreach (array_keys($links) as $key) {
+    if (str_starts_with($key, 'comment__')) {
+      unset($links[$key]);
+    }
+  }
+}

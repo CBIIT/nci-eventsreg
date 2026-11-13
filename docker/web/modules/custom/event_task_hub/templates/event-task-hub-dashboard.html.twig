@@ -1,0 +1,14 @@
+<section class="eth-dashboard eth-card" aria-label="{{ 'Event task progress'|t }}">
+  <h2>{{ 'Task Progress'|t }}</h2>
+  <p class="eth-count"><strong>{{ done }}</strong> {{ 'of'|t }} {{ total }} {{ 'tasks completed'|t }}</p>
+  <div class="eth-progress" role="progressbar" aria-label="{{ 'Tasks completed'|t }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ percent }}" aria-valuetext="{{ done }} {{ 'of'|t }} {{ total }}">
+    <span style="width: {{ percent }}%"></span>
+  </div>
+  <p class="eth-launch" data-launch="{{ launch.state }}"><span class="eth-pill eth-launch__badge" data-status="{{ launch.state }}">{% if launch.state == 'launched' %}<span aria-hidden="true">✓ </span>{% endif %}{{ launch.label }}</span>{% if launch.date %} <time datetime="{{ launch.date }}">{{ launch.date_label }}</time>{% endif %}</p>
+  <ul class="eth-counts" aria-label="{{ 'Tasks by status'|t }}">
+    {% for key, count in counts %}<li><span class="eth-pill" data-status="{{ key }}">{{ count.count }} {{ count.label }}</span></li>{% endfor %}
+  </ul>
+  <div class="eth-tasks">
+    {% for task in tasks %}{{ task }}{% else %}<p>{{ 'Select task statuses on the Edit tab to add tasks to this event.'|t }}</p>{% endfor %}
+  </div>
+</section>

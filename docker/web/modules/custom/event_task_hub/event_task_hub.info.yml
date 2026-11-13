@@ -1,0 +1,14 @@
+name: Event Task Hub
+type: module
+description: 'Self-contained event task progress, discussions, private attachments and notifications.'
+package: Custom
+version: 2.1.1
+core_version_requirement: ^10.3 || ^11
+dependencies:
+  - drupal:node
+  - drupal:field
+  - drupal:comment
+  - drupal:file
+  - drupal:options
+  - drupal:datetime
+  - drupal:link

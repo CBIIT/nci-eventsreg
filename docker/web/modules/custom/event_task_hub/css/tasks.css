@@ -1,0 +1,656 @@
+/* ==========================================================================
+    Manage My Event page
+    Every rule is scoped to .page-node-type-manage-my, so no other page on the
+    event site is affected. Adapted for native Event Task Hub templates.
+    ========================================================================== */
+
+.page-node-type-manage-my {
+   --mme-navy: #203a64;
+   --mme-ink: #1f2a37;
+   --mme-muted: #5c6670;
+   --mme-line: #d5dae1;
+   --mme-surface: #ffffff;
+   --mme-soft: #f5f7fa;
+   --mme-track: #dfe4ea;
+   --mme-done: #2e8540;
+   --mme-link: #1a5a96;
+   --mme-radius: 10px;
+ }
+
+/* --- Page frame ---------------------------------------------------------- */
+
+/* The banner is a background image, and this site normally relies on a page's
+    first h2 (margin-top: 26%) to push content below it. This page has no h2 at
+    the top, so clear the banner here and cancel that margin on its h2s. */
+ .page-node-type-manage-my .region-content {
+   padding-top: 26%;
+   padding-bottom: 24px;
+ }
+
+.page-node-type-manage-my .region-content h2 {
+   margin-top: 0;
+ }
+
+/* The theme hides h1; show it on this page as the page title. */
+ .page-node-type-manage-my h1.page-header {
+   display: block;
+   margin: 0 0 20px;
+   padding: 0;
+   border: 0;
+   font-size: 28px;
+   font-weight: 500;
+   line-height: 1.25;
+   color: #606060;
+ }
+
+/* The event CSS hides every field label; this page needs them. */
+ .page-node-type-manage-my .manage-my .field--label {
+   display: block;
+   float: none;
+ }
+
+.page-node-type-manage-my .manage-my .field--label::after {
+   content: none;
+ }
+
+/* --- Cards --------------------------------------------------------------- */
+
+.page-node-type-manage-my .eth-dashboard,
+ .page-node-type-manage-my .eth-post-card,
+ .page-node-type-manage-my .eth-history {
+   background: var(--mme-surface);
+   border: 1px solid var(--mme-line);
+   border-radius: var(--mme-radius);
+   padding: 24px;
+   margin: 0 0 24px;
+ }
+
+.page-node-type-manage-my .eth-dashboard > h2,
+ .page-node-type-manage-my .eth-post-card > h2,
+ .page-node-type-manage-my .eth-history > h2 {
+   margin: 0 0 16px;
+   font-size: 22px;
+   font-weight: 500;
+   line-height: 1.3;
+   color: var(--mme-navy);
+ }
+
+/* --- Progress summary ---------------------------------------------------- */
+
+.page-node-type-manage-my .eth-count {
+   margin: 0 0 8px;
+   font-size: 16px;
+   color: var(--mme-ink);
+ }
+
+.page-node-type-manage-my .eth-count strong {
+   font-size: 26px;
+   font-weight: 700;
+   color: var(--mme-navy);
+ }
+
+.page-node-type-manage-my .eth-progress {
+   box-sizing: border-box;
+   height: 16px;
+   background: var(--mme-track);
+   border: 1px solid #8d9297;
+   border-radius: 999px;
+   overflow: hidden;
+ }
+
+.page-node-type-manage-my .eth-progress > span {
+   height: 100%;
+   min-width: 0;
+   background: var(--mme-done);
+   border-radius: 999px;
+   transition: width 0.4s ease;
+ }
+
+.page-node-type-manage-my .eth-counts {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 8px;
+   margin: 14px 0 20px;
+   padding: 0;
+   list-style: none;
+ }
+
+.page-node-type-manage-my .eth-counts li {
+   margin: 0;
+ }
+
+/* --- Launch status (under the progress bar) ------------------------------ */
+
+.page-node-type-manage-my .eth-launch {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   gap: 6px 12px;
+   margin: 14px 0 0;
+   font-size: 15px;
+   line-height: 1.4;
+   color: var(--mme-ink);
+ }
+
+.page-node-type-manage-my .eth-launch__badge {
+   display: inline-block;
+   padding: 4px 12px;
+   border: 1px solid #8d9297;
+   border-radius: 999px;
+   background: #eef0f3;
+   color: #2f3740;
+   font-size: 13px;
+   font-weight: 700;
+   white-space: nowrap;
+ }
+
+.page-node-type-manage-my .eth-launch[data-launch="on-track"] .eth-launch__badge {
+   background: #e3f4e8;
+   border-color: #2e8540;
+   color: #17602e;
+ }
+
+.page-node-type-manage-my .eth-launch[data-launch="soon"] .eth-launch__badge {
+   background: #fde9d9;
+   border-color: #c55a11;
+   color: #8a3b00;
+ }
+
+.page-node-type-manage-my .eth-launch[data-launch="overdue"] .eth-launch__badge {
+   background: #fbe3e4;
+   border-color: #c62828;
+   color: #8b1a1a;
+ }
+
+.page-node-type-manage-my .eth-launch[data-launch="launched"] .eth-launch__badge {
+   background: #e5ebf4;
+   border-color: #203a64;
+   color: #203a64;
+ }
+
+/* --- Status pills (task rows and summary chips) -------------------------- */
+
+.page-node-type-manage-my .eth-pill {
+   display: inline-block;
+   padding: 4px 12px;
+   border: 1px solid #8d9297;
+   border-radius: 999px;
+   background: #eef0f3;
+   color: #2f3740;
+   font-size: 13px;
+   font-weight: 600;
+   line-height: 1.4;
+   white-space: nowrap;
+ }
+
+.page-node-type-manage-my .eth-pill[data-status="content-needed"],
+ .page-node-type-manage-my .eth-pill[data-status="email-needed"],
+ .page-node-type-manage-my .eth-pill[data-status="apply-for-approval"] {
+   background: #fff1d6;
+   border-color: #b97b05;
+   color: #6b4300;
+ }
+
+.page-node-type-manage-my .eth-pill[data-status="approval-needed"] {
+   background: #efe8f9;
+   border-color: #6c4ab6;
+   color: #4a2a82;
+ }
+
+.page-node-type-manage-my .eth-pill[data-status="testing-required"] {
+   background: #ddf4f4;
+   border-color: #16808a;
+   color: #0b4d52;
+ }
+
+.page-node-type-manage-my .eth-pill[data-status="in-development"],
+ .page-node-type-manage-my .eth-pill[data-status="approval-pending"] {
+   background: #e1f0fb;
+   border-color: #2378c3;
+   color: #0b4778;
+ }
+
+.page-node-type-manage-my .eth-pill[data-status="completed"],
+ .page-node-type-manage-my .eth-pill[data-status="approved"] {
+   background: #e3f4e8;
+   border-color: #2e8540;
+   color: #17602e;
+ }
+
+/* --- Task rows ----------------------------------------------------------- */
+
+.page-node-type-manage-my .eth-task {
+   display: grid;
+   grid-template-columns: minmax(0, 1fr) auto;
+   column-gap: 16px;
+   row-gap: 4px;
+   align-items: center;
+   margin: 0;
+   padding: 12px 0;
+   border-top: 1px solid var(--mme-line);
+ }
+
+.page-node-type-manage-my .eth-task .eth-task-heading > h3 {
+   grid-column: 1;
+   margin: 0;
+   padding: 0;
+   font-size: 15px;
+   font-weight: 600;
+   color: var(--mme-ink);
+   overflow-wrap: anywhere;
+ }
+
+.page-node-type-manage-my .eth-task .eth-task-heading > .eth-pill {
+   grid-column: 2;
+   justify-self: end;
+ }
+
+.page-node-type-manage-my .eth-task > .eth-help,
+ .page-node-type-manage-my .eth-task > .eth-task-link {
+   grid-column: 1;
+   justify-self: start;
+   margin: 0;
+   font-size: 14px;
+   line-height: 1.5;
+ }
+
+/* Help text fills the space to the left of the status pill and never runs under it. */
+ .page-node-type-manage-my .eth-help {
+   max-width: none;
+   color: var(--mme-muted);
+ }
+
+/* Links that open in a new tab get a small arrow, plus hidden text for screen readers. */
+ .page-node-type-manage-my .eth-new-tab::after {
+   content: " \2197";
+   content: " \2197" / "";
+   font-size: 0.9em;
+   text-decoration: none;
+   display: inline-block;
+   margin-left: 2px;
+ }
+
+.page-node-type-manage-my .eth-sr-only {
+   position: absolute;
+   width: 1px;
+   height: 1px;
+   margin: -1px;
+   padding: 0;
+   overflow: hidden;
+   clip: rect(0, 0, 0, 0);
+   white-space: nowrap;
+   border: 0;
+ }
+
+/* Help text with several lines is a list; show it without bullets. */
+ .page-node-type-manage-my ul.eth-help {
+   padding: 0;
+   list-style: none;
+ }
+
+.page-node-type-manage-my .eth-help li {
+   margin: 0;
+ }
+
+.page-node-type-manage-my .eth-help a {
+   color: var(--mme-link);
+   text-decoration: underline;
+ }
+
+.page-node-type-manage-my .eth-task-link a {
+   color: var(--mme-link);
+   font-weight: 600;
+   text-decoration: underline;
+ }
+
+/* --- Post an update form ------------------------------------------------- */
+
+/* Hide the pencil (contextual links) icon on the form. Admins reach the
+    webform's Build, Settings and Results pages from the admin menu instead. */
+ .page-node-type-manage-my .eth-post-card .contextual {
+   display: none;
+ }
+
+.page-node-type-manage-my .eth-post-card .control-label {
+   display: block;
+   margin: 0 0 6px;
+   font-size: 15px;
+   font-weight: 600;
+   color: var(--mme-ink);
+ }
+
+.page-node-type-manage-my .eth-post-card textarea {
+   width: 100%;
+   min-height: 130px;
+   padding: 10px 12px;
+   border: 1px solid #7c858f;
+   border-radius: 6px;
+   font-size: 15px;
+   line-height: 1.5;
+ }
+
+.page-node-type-manage-my .eth-post-card .form-file {
+   height: auto;
+   max-width: 100%;
+   border: 1px solid #7c858f;
+   border-radius: 6px;
+   background: var(--mme-soft);
+ }
+
+.page-node-type-manage-my .eth-post-card textarea:focus,
+ .page-node-type-manage-my .eth-post-card .form-file:focus {
+   border-color: var(--mme-navy);
+   outline: 2px solid var(--mme-navy);
+   outline-offset: 1px;
+   box-shadow: none;
+ }
+
+.page-node-type-manage-my .eth-post-card .form-actions {
+   margin: 16px 0 0;
+ }
+
+/* --- Update history cards ------------------------------------------------ */
+
+.page-node-type-manage-my .eth-comment {
+   display: grid;
+   grid-template-columns: minmax(0, 1fr) auto;
+   column-gap: 12px;
+   row-gap: 8px;
+   align-items: baseline;
+   margin: 0 0 12px;
+   padding: 16px 18px;
+   background: var(--mme-soft);
+   border: 1px solid var(--mme-line);
+   border-left: 4px solid var(--mme-navy);
+   border-radius: 8px;
+ }
+
+.page-node-type-manage-my .eth-comment:last-child {
+   margin-bottom: 0;
+ }
+
+/* The theme's link blue is too light on the card's tinted background. */
+ .page-node-type-manage-my .eth-comment a {
+   color: var(--mme-link);
+ }
+
+.page-node-type-manage-my .eth-comment header strong {
+   grid-column: 1;
+   grid-row: 1;
+   font-size: 15px;
+   font-weight: 700;
+   color: var(--mme-ink);
+   overflow-wrap: anywhere;
+ }
+
+.page-node-type-manage-my .eth-comment header span {
+   grid-column: 2;
+   grid-row: 1;
+   font-size: 13px;
+   color: var(--mme-muted);
+   text-align: right;
+ }
+
+.page-node-type-manage-my .eth-comment .eth-message,
+ .page-node-type-manage-my .eth-comment .eth-comment-files {
+   grid-column: 1 / -1;
+ }
+
+/* The comment text: keep the line breaks the author typed. */
+ .page-node-type-manage-my .eth-comment .eth-message {
+   font-size: 15px;
+   line-height: 1.55;
+   color: var(--mme-ink);
+   white-space: pre-line;
+   overflow-wrap: anywhere;
+ }
+
+/* Attached files as chips. */
+ .page-node-type-manage-my .eth-comment ul {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 8px;
+   margin: 0;
+   padding: 0;
+   list-style: none;
+ }
+
+.page-node-type-manage-my .eth-comment li {
+   margin: 0;
+   max-width: 100%;
+ }
+
+.page-node-type-manage-my .eth-comment .file {
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   width: auto;
+   max-width: 100%;
+   padding: 6px 10px;
+   background: var(--mme-surface);
+   border: 1px solid var(--mme-line);
+   border-radius: 6px;
+   font-size: 13px;
+ }
+
+.page-node-type-manage-my .eth-comment .file > span {
+   display: inline;
+   width: auto;
+   padding: 0;
+   border: 0;
+   background: none;
+ }
+
+.page-node-type-manage-my .eth-comment .file-link {
+   min-width: 0;
+   overflow-wrap: anywhere;
+ }
+
+.page-node-type-manage-my .eth-comment .file-size {
+   color: var(--mme-muted);
+   white-space: nowrap;
+ }
+
+/* --- Update history: task, filter row and header ------------------------- */
+
+/* The task each update relates to: larger bold text below the name and date. */
+ .page-node-type-manage-my .eth-comment .eth-comment-task {
+   grid-column: 1 / -1;
+   grid-row: 2;
+   justify-self: start;
+   margin: 0;
+   padding: 0;
+   border: 0;
+   border-radius: 0;
+   background: none;
+   color: var(--mme-ink);
+   font-size: 18px;
+   font-weight: 700;
+   line-height: 1.3;
+   overflow-wrap: anywhere;
+ }
+
+/* On small screens the card is one column: name, date, then task. */
+ @media (max-width: 600px) {
+   .page-node-type-manage-my .eth-comment .eth-comment-task {
+     grid-row: 3;
+   }
+ }
+
+/* The Task filter above the cards: label, dropdown and Apply button on one line. */
+ .page-node-type-manage-my .eth-history .eth-history-filter {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   gap: 12px;
+   margin: 0 0 16px;
+ }
+
+.page-node-type-manage-my .eth-history .eth-history-filter::before,
+ .page-node-type-manage-my .eth-history .eth-history-filter::after {
+   content: none;
+ }
+
+.page-node-type-manage-my .eth-history .eth-history-filter .form-item {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   float: none;
+   margin: 0;
+ }
+
+.page-node-type-manage-my .eth-history .eth-history-filter label {
+   margin: 0;
+   font-size: 15px;
+   font-weight: 600;
+   color: var(--mme-ink);
+ }
+
+.page-node-type-manage-my .eth-history .eth-history-filter select {
+   height: 40px;
+   min-width: 200px;
+   border: 1px solid #7c858f;
+   border-radius: 6px;
+ }
+
+.page-node-type-manage-my .eth-history .eth-history-filter .form-actions {
+   margin: 0;
+ }
+
+.page-node-type-manage-my .eth-history .eth-history-filter .form-actions .btn {
+   height: auto;
+   margin: 0;
+   padding: 10px 20px;
+   line-height: 20px;
+ }
+
+@media (max-width: 600px) {
+   .page-node-type-manage-my .eth-history .eth-history-filter {
+     flex-direction: column;
+     align-items: stretch;
+   }
+
+  .page-node-type-manage-my .eth-history .eth-history-filter .form-item {
+     flex-direction: column;
+     align-items: stretch;
+     gap: 4px;
+   }
+
+  .page-node-type-manage-my .eth-history .eth-history-filter .select-wrapper,
+   .page-node-type-manage-my .eth-history .eth-history-filter select,
+   .page-node-type-manage-my .eth-history .eth-history-filter .form-actions .btn {
+     width: 100%;
+   }
+ }
+
+/* Text in the update history's header area. */
+ .page-node-type-manage-my .eth-history-count {
+   margin-top: -1%;
+   padding-bottom: 2%;
+   font-size: 12px;
+   font-weight: 700;
+   color: var(--mme-navy);
+ }
+
+/* --- Small screens ------------------------------------------------------- */
+
+@media (max-width: 600px) {
+   .page-node-type-manage-my .eth-dashboard,
+   .page-node-type-manage-my .eth-post-card,
+   .page-node-type-manage-my .eth-history {
+     padding: 16px;
+     margin-bottom: 16px;
+   }
+
+  .page-node-type-manage-my h1.page-header {
+     font-size: 24px;
+   }
+
+  .page-node-type-manage-my .eth-task,
+   .page-node-type-manage-my .eth-comment {
+     grid-template-columns: minmax(0, 1fr);
+   }
+
+  .page-node-type-manage-my .eth-task .eth-task-heading > .eth-pill {
+     grid-column: 1;
+     justify-self: start;
+   }
+
+  .page-node-type-manage-my .eth-comment header span {
+     grid-column: 1;
+     grid-row: 2;
+     text-align: left;
+   }
+
+  .page-node-type-manage-my .eth-post-card .form-actions .btn {
+     width: 100%;
+   }
+ }
+
+@media (prefers-reduced-motion: reduce) {
+   .page-node-type-manage-my .eth-progress > span {
+     transition: none;
+   }
+ }
+/* Native Event Task Hub markup and collapsed task discussions. */
+.page-node-type-manage-my .eth-card { color: var(--mme-ink); }
+.page-node-type-manage-my .eth-card h2 { text-transform: none; letter-spacing: normal; }
+.page-node-type-manage-my .eth-task-heading { display: contents; }
+.page-node-type-manage-my .eth-task { scroll-margin-top: 24px; }
+.page-node-type-manage-my .eth-task > .eth-help,
+.page-node-type-manage-my .eth-task > .eth-task-link { grid-column: 1; }
+.page-node-type-manage-my .eth-task > .eth-discussion { grid-column: 1 / -1; }
+.page-node-type-manage-my .eth-task > .eth-help { margin: 0; font-size: 14px; line-height: 1.5; }
+.page-node-type-manage-my .eth-card .eth-discussion {
+  margin: 8px 0 0; padding: 0; border: 0; background: transparent;
+}
+.page-node-type-manage-my .eth-discussion > summary {
+  cursor: pointer; color: var(--mme-link); font-size: 14px; font-weight: 600;
+}
+.page-node-type-manage-my .eth-discussion[open] > .details-wrapper {
+  padding: 12px 0 0;
+}
+.page-node-type-manage-my .eth-post { display: inline-block; margin-top: 12px; }
+.page-node-type-manage-my .eth-card a { color: var(--mme-link); }
+.page-node-type-manage-my .eth-comment header { display: contents; }
+.page-node-type-manage-my .eth-comment .eth-message,
+.page-node-type-manage-my .eth-comment .eth-comment-files,
+.page-node-type-manage-my .eth-comment nav { grid-column: 1 / -1; }
+.page-node-type-manage-my .eth-comment nav { display: flex; gap: 12px; }
+.page-node-type-manage-my .eth-comment .eth-message { white-space: pre-wrap; }
+.page-node-type-manage-my .eth-history-count { margin: -8px 0 20px; padding: 0; }
+.page-node-type-manage-my .eth-empty { margin: 0; }
+.page-node-type-manage-my .eth-card label {
+  display: block; margin-bottom: 6px; font-size: 15px; font-weight: 600;
+  color: var(--mme-ink);
+}
+.page-node-type-manage-my .eth-post-card .form-item { margin: 0 0 16px; }
+.page-node-type-manage-my .eth-post-card select {
+  width: 100%; min-height: 35px; border: 1px solid #c8c8c8;
+  border-radius: 3px; background-color: white; color: var(--mme-ink);
+}
+.page-node-type-manage-my .eth-card .form-submit {
+  background: var(--mme-navy); color: #fff; border: 1px solid var(--mme-navy);
+  border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5;
+  box-shadow: none;
+}
+.page-node-type-manage-my .eth-history-filter .form-submit {
+  border-radius: 6px; padding: 10px 20px; margin: 0;
+}
+.page-node-type-manage-my .eth-card .form-submit:hover { background: #172e52; }
+.page-node-type-manage-my .eth-card a:focus-visible,
+.page-node-type-manage-my .eth-card summary:focus-visible,
+.page-node-type-manage-my .eth-card .form-submit:focus-visible {
+  outline: 3px solid var(--mme-navy); outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .page-node-type-manage-my .eth-card .eth-task-heading > .eth-pill {
+    grid-column: 1; justify-self: start;
+  }
+  .page-node-type-manage-my .eth-post-card .form-submit { width: 100%; }
+}
+
+
+.page-node-type-manage-my .eth-progress > span { display: block; }
+
+.page-node-type-manage-my .eth-task .eth-task-heading > h3 { line-height: 1.4; }

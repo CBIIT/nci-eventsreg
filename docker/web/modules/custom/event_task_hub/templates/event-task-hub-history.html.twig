@@ -1,0 +1,7 @@
+<section class="eth-card eth-history" id="eth-update-history" aria-labelledby="eth-history-title">
+  <h2 id="eth-history-title">{{ 'Event Update History'|t }}</h2>
+  <p class="eth-history-count">({{ 'Displaying'|t }} {{ start }} - {{ end }} {{ 'of'|t }} {{ total }})</p>
+  {{ filter }}
+  {% for item in items %}{{ item }}{% else %}<p class="eth-empty">{{ 'No updates yet.'|t }}</p>{% endfor %}
+  {{ pager }}
+</section>

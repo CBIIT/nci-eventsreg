@@ -1,0 +1,4 @@
+access event task discussions:
+  title: 'Access event task discussions'
+  description: 'Read task comments and attachments on event pages the user can view. Posting also requires Post comments.'
+  restrict access: true

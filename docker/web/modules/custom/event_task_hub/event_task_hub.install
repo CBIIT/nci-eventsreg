@@ -1,0 +1,12 @@
+<?php
+
+/** Implements hook_install(). */
+function event_task_hub_install(): void {
+  (new \Drupal\event_task_hub\Setup())->provision();
+}
+
+/** Upgrades the original Views/Webform add-on to the self-contained version. */
+function event_task_hub_update_11001(): string {
+  (new \Drupal\event_task_hub\Setup())->provision();
+  return 'Provisioned Manage My Event tasks, native discussions, attachments and roles. Existing content was retained.';
+}
